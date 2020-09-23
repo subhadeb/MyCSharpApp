@@ -10,7 +10,7 @@ namespace MyCSharpApp
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("This is the Mail App");
+            Console.WriteLine("This is the Main App");
             Console.ReadKey();
         }
     }
