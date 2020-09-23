@@ -81,10 +81,22 @@ class Program
         {
             Console.WriteLine("Retrieved");
             var mList =     JsonConvert.DeserializeObject<IDictionary<string, Student>>(response.Body);
-            List<Student> studentList = mList.Values.ToList();
+            var studentList = new List<Student>();
+            foreach (var item in mList)
+            {
+                studentList.Add(new Student
+                {
+                    Name = item.Value.Name,
+                    Age = item.Value.Age,
+                    Key = item.Key
+                });
+            }
+            Console.WriteLine("Name\t\tAge\t\tkey");
             foreach (var studResp in studentList)
             {
-                Console.WriteLine("Student Name: {0}, Age: {1}",studResp.Name,studResp.Age);
+                var name = (studResp.Name.PadRight(15)).Substring(0,15);
+
+                Console.WriteLine("{0}\t{1}\t\t{2}", name, studResp.Age,studResp.Key);
             }
         }
         Console.ReadKey();
@@ -117,5 +129,6 @@ class Program
 public class Student
 {
     public string Name { get; set; }
+    public string Key { get; set; }
     public int Age { get; set; }
 }
