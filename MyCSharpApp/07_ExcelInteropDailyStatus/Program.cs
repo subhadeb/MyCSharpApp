@@ -19,7 +19,7 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 class Program
 {
     //Configurable Paths and FileName Constants.
-    public const string ExcelFilePath = @"C:\Users\subdeb\Documents\Subha_Deb_497290\Study\Dot_Net_Study\2 OOPS and C Sharp\CSharp Apps Programs  Backup\7_ExcelInterloop Daily Status\InputFiles\";
+    public const string ExcelFilePath = @"C:\Users\subdeb\Documents\Subha_Deb_497290\Study\Dot_Net_Study\2 OOPS and C Sharp\CSharp Apps Programs  Backup\7_ExcelInteropDailyStatus\InputFiles\";
     public const string ExcelFilePathProdForSave = @"C:\Users\subdeb\Documents\ProjectWP\Other Tasks\00_Daily_Status\aa_ProgrammedExcelFile\";
     public const string InputExcelFileName = "InputFile_5.xlsx";
     public static List<string> ReceipentsEmailIdsList = new List<string>() { "abhishekkumar4@DELOITTE.com", "raparanjpe@deloitte.com", "ylimbachia@deloitte.com" };
