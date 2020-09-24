@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{E5A731C9-B9F7-436B-9266-7EDF5D0C3321}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>_1_DBColumnResultToDML</RootNamespace>
-    <AssemblyName>1_DBColumnResultToDML</AssemblyName>
+    <RootNamespace>_01_DBColumnResultToDML</RootNamespace>
+    <AssemblyName>01_DBColumnResultToDML</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
