@@ -15,8 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "5_OpenExeFilePath", "5_Open
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "6_ConnectToDBFresh", "6_ConnectToDBFresh\6_ConnectToDBFresh.csproj", "{8F460CC7-729F-4467-9EB2-49AB0B4ED979}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "7_ExcelInterop DailyStatus", "7_ExcelInterop DailyStatus\7_ExcelInterop DailyStatus.csproj", "{5676DE4C-C335-4183-A250-2F7EF554F758}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,10 +45,6 @@ Global
 		{8F460CC7-729F-4467-9EB2-49AB0B4ED979}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F460CC7-729F-4467-9EB2-49AB0B4ED979}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F460CC7-729F-4467-9EB2-49AB0B4ED979}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5676DE4C-C335-4183-A250-2F7EF554F758}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5676DE4C-C335-4183-A250-2F7EF554F758}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5676DE4C-C335-4183-A250-2F7EF554F758}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5676DE4C-C335-4183-A250-2F7EF554F758}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
