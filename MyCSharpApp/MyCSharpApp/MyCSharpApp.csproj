@@ -49,5 +49,10 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="All_DLLs\Microsoft.Office.Interop.Excel.dll" />
+    <Content Include="All_DLLs\Microsoft.Office.Interop.Outlook.dll" />
+    <Content Include="All_DLLs\Newtonsoft.Json.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
