@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,20 +34,46 @@ class Program
     static void Main(string[] args)
     {
         populateConstants();
-        GetDailyStatusModelListInput();
-        //PracticeCodes();//Mainly used for Dev
+        populateStatusDate();
+        int input = 0;
+        Console.WriteLine("Enter 1 For ConsoleInput; 2 For TextFile Input");
+        int.TryParse(Console.ReadLine(), out input);
+        if (input == 1)
+        {
+            GetDailyStatusModelListInput();
+        }
+        else if (input == 2)
+        {
+            GetDailyStatusModelListFromInputFile();
+        }
+        else
+        {
+            Console.WriteLine("Invalid Input");
+            Console.ReadKey();
+            Environment.Exit(0);
+        }
         ExcelOperations();
         MailOperations();
     }
-    static void PracticeCodes()
-    {
 
-        if (dailyStatusModelList != null)
+    static void populateStatusDate()
+    {
+        var isValid = false;
+        while (!isValid)
         {
-            for (int i = 0; i < dailyStatusModelList.Count; i++)
+            Console.WriteLine("Enter Month/Date [eg. 12/31]");
+            string inputStatusDate = Console.ReadLine();
+            inputStatusDate = inputStatusDate + "/2020";
+            StatusDate = new DateTime();
+            DateTime.TryParse(inputStatusDate, out StatusDate);
+            if (StatusDate == DateTime.MinValue)
             {
-                var item = dailyStatusModelList[i];
-                Console.WriteLine(item.Id + "\t " + item.Date + "\t" + item.Track + "\t" + item.Module + "\t" + item.Practitioner + "\t" + item.Activity + "\t" + item.ActivityDetails + "\t" + item.TFSID + "\t" + item.Comments);
+                Console.WriteLine("Invalid Date Please Enter Input in Correct Format");
+                Console.WriteLine();
+            }
+            else
+            {
+                isValid = true;
             }
         }
     }
@@ -54,11 +81,6 @@ class Program
     static List<DailyStatusModel> GetDailyStatusModelListInput()
     {
         dailyStatusModelList = new List<DailyStatusModel>();
-        Console.WriteLine("Enter Month/Date [eg. 12/31]");
-        string inputStatusDate = Console.ReadLine();
-        inputStatusDate = inputStatusDate + "/2020";
-        StatusDate = new DateTime();
-        DateTime.TryParse(inputStatusDate, out StatusDate);
         int activityNum = 1;//1 is added Temporararily so that while loop get's executed. With Do While Loop this can be ignored.
         var loopCounterForId = 1;
         while (activityNum >= 1 && activityNum <= 5)
@@ -133,6 +155,116 @@ class Program
             else
             {
                 break;
+            }
+        }
+        return dailyStatusModelList;
+    }
+    static List<DailyStatusModel> GetDailyStatusModelListFromInputFile()
+    {
+        Console.WriteLine();
+        string inputFilePath = Environment.CurrentDirectory + @"\InputOutput\InputFile.txt";
+        var fileUpdatedDateTime = File.GetLastWriteTime(inputFilePath);
+        string displayDateTime = fileUpdatedDateTime.ToShortTimeString() + " " + fileUpdatedDateTime.DayOfWeek + " " + fileUpdatedDateTime.ToShortDateString();
+        Console.WriteLine("InputFile File Was Last Updated On {0}", displayDateTime);
+        Console.WriteLine("Press [Y] to Continue, any other key to open the containing Folder");
+        if (Console.ReadLine().ToLower() != "y")
+        {
+            System.Diagnostics.Process.Start(Environment.CurrentDirectory + @"\InputOutput");
+            Environment.Exit(0);
+
+        }
+        dailyStatusModelList = new List<DailyStatusModel>();
+        //DateTime lastModified = System.IO.File.GetLastWriteTime(strFilePath);
+        var loopCounterForId = 1;
+        var inputFileLines = new List<string>();
+        var fileStream = new FileStream(inputFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+        using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+        {
+            string line;
+            while ((line = streamReader.ReadLine()) != null)
+            {
+                inputFileLines.Add(line);
+                if (line == "END OF INPUT")
+                {
+                    break;
+                }
+
+            }
+            streamReader.Close();
+        }
+        DailyStatusModel dailyStatusModel;
+        foreach (var line in inputFileLines)
+        {
+            if (line.Contains("Triage Bug ID") || line.Contains("Code Fix Bug ID"))
+            {
+                var indexOfLine = inputFileLines.IndexOf(line);
+                dailyStatusModel = new DailyStatusModel();
+                dailyStatusModel.Date = StatusDate.ToString();
+                if (line.Contains("Triage Bug ID"))
+                {
+                    dailyStatusModel.Activity = constantModelList.FirstOrDefault(x => x.Id == 1).value1;
+                }
+                else
+                {
+                    dailyStatusModel.Activity = constantModelList.FirstOrDefault(x => x.Id == 2).value1;
+                }
+                dailyStatusModel.TFSID = line.Substring(line.IndexOf(':') + 1).Trim();
+                var lineModule = inputFileLines[indexOfLine + 1];
+                dailyStatusModel.Module = lineModule.Substring(lineModule.IndexOf(':') + 1).Trim();
+                var lineActivityDetails = inputFileLines[indexOfLine + 2];
+                dailyStatusModel.ActivityDetails = lineActivityDetails.Substring(lineActivityDetails.IndexOf(':') + 1).Trim();
+                var lineCompleted = inputFileLines[indexOfLine + 3];
+                var Completed = lineCompleted.Substring(lineCompleted.IndexOf(':') + 1).Trim();
+                if (Completed.ToLower() == "y")
+                {
+                    dailyStatusModel.Comments = "Completed";
+                }
+                else if (Completed.ToLower() == "n")
+                {
+                    dailyStatusModel.Comments = "In-Progress";
+                }
+                dailyStatusModel.Id = loopCounterForId;
+                loopCounterForId++;
+                dailyStatusModelList.Add(dailyStatusModel);
+            }
+            else if (line.Contains("Smoke Testing"))
+            {
+                dailyStatusModel = new DailyStatusModel();
+                dailyStatusModel.Module = "WP";
+                dailyStatusModel.Date = StatusDate.ToString();
+                dailyStatusModel.Activity = constantModelList.FirstOrDefault(x => x.Id == 3).value1;
+                dailyStatusModel.Id = loopCounterForId;
+                loopCounterForId++;
+                dailyStatusModel.ActivityDetails = "Smoke Test";
+                dailyStatusModel.TFSID = "N/A";
+                dailyStatusModel.Comments = "Completed";
+                dailyStatusModelList.Add(dailyStatusModel);
+            }
+            else if (line.Contains("Peer Tested Bugs"))
+            {
+                dailyStatusModel = new DailyStatusModel();
+                dailyStatusModel.TFSID = dailyStatusModel.TFSID = line.Substring(line.IndexOf(':') + 1).Trim();
+                dailyStatusModel.Module = "WP";
+                dailyStatusModel.Date = StatusDate.ToString();
+                dailyStatusModel.Activity = constantModelList.FirstOrDefault(x => x.Id == 4).value1;
+                dailyStatusModel.Id = loopCounterForId;
+                loopCounterForId++;
+                dailyStatusModel.ActivityDetails = "Peer Tested Bugs";
+                dailyStatusModel.Comments = "Completed";
+                dailyStatusModelList.Add(dailyStatusModel);
+            }
+            else if (line.Contains("Ad-Hoc Activity Details"))
+            {
+                dailyStatusModel = new DailyStatusModel();
+                dailyStatusModel.Module = "WP";
+                dailyStatusModel.Date = StatusDate.ToString();
+                dailyStatusModel.Activity = constantModelList.FirstOrDefault(x => x.Id == 5).value1;
+                dailyStatusModel.Id = loopCounterForId;
+                loopCounterForId++;
+                dailyStatusModel.TFSID = "N/A";
+                dailyStatusModel.ActivityDetails = line.Substring(line.IndexOf(':') + 1).Trim();
+                dailyStatusModel.Comments = "Completed";
+                dailyStatusModelList.Add(dailyStatusModel);
             }
         }
         return dailyStatusModelList;
