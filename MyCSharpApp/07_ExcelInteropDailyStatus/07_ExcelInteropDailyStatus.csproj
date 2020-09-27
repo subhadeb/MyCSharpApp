@@ -36,12 +36,12 @@
     <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>..\..\..\..\..\Documents\Subha_Deb_497290\Study\Dot_Net_Study\2 OOPS and C Sharp\CSharp Apps Programs  Backup\7_ExcelInteropDailyStatus\Microsoft.Office.Interop.Excel.dll</HintPath>
+      <HintPath>..\MyCSharpApp\All_DLLs\Microsoft.Office.Interop.Excel.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Office.Interop.Outlook, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>..\..\..\..\..\Documents\Subha_Deb_497290\Study\Dot_Net_Study\2 OOPS and C Sharp\CSharp Apps Programs  Backup\7_ExcelInteropDailyStatus\Microsoft.Office.Interop.Outlook.dll</HintPath>
+      <HintPath>..\MyCSharpApp\All_DLLs\Microsoft.Office.Interop.Outlook.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

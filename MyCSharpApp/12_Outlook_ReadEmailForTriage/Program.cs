@@ -21,8 +21,8 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 
 class Program
 {
-    public const string OutputFilePath = @"C:\Users\subdeb\Documents\ProjectWP\DefectFixingSIT\00Input_Copy.txt";
-    public const string OutputFileRunEXEPath = @"C:\Users\subdeb\Documents\ProjectWP\DefectFixingSIT\ConsoleCSharpPrograms.exe";
+    public const string OutputFilePath = @"C:\Users\subdeb\Documents\ProjectWP\\DefectsList\00Input_Copy.txt";
+    public const string OutputFileRunEXEPath = @"C:\Users\subdeb\Documents\ProjectWP\DefectsList\2_DefectFormatterApp.exe";
 
 
     static void Main(string[] args)
