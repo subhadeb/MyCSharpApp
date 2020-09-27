@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 class Program
 {
     //FOR DEV, IN THE METHOD WriteToOutputFile set writeToFile = false, for Prod it is true
-    public const string InputFilePath = @"C:\Users\subdeb\Documents\ProjectWP\DefectFixingSIT\00Input_Copy.txt";
-    public const string OutputFilePath = @"C:\Users\subdeb\Documents\ProjectWP\DefectFixingSIT\00DefectListSIT.txt";
-    public const string OutputDirectoryPath = @"C:\Users\subdeb\Documents\ProjectWP\DefectFixingSIT\";
+    public const string InputFilePath = @"C:\Users\subdeb\Documents\ProjectWP\DefectsList\00Input_Copy.txt";
+    public const string OutputFilePath = @"C:\Users\subdeb\Documents\ProjectWP\DefectsList\00DefectListSIT.txt";
+    public const string OutputDirectoryPath = @"C:\Users\subdeb\Documents\ProjectWP\DefectsList\";
 
 
     //Static Common Variables
