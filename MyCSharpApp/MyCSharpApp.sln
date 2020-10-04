@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "08_XMLJSON", "08_XMLJSON\08
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "09_CreateMultipleTextFilesFromInput", "09_CreateMultipleTextFilesFromInput\09_CreateMultipleTextFilesFromInput.csproj", "{43C8AFE9-3089-4666-8EA3-DBBDD1099D4A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "14_ReadExcelFile", "14_ReadExcelFile\14_ReadExcelFile.csproj", "{A4C6D7AB-1833-4C86-B014-793D0DB79A69}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{43C8AFE9-3089-4666-8EA3-DBBDD1099D4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43C8AFE9-3089-4666-8EA3-DBBDD1099D4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43C8AFE9-3089-4666-8EA3-DBBDD1099D4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4C6D7AB-1833-4C86-B014-793D0DB79A69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4C6D7AB-1833-4C86-B014-793D0DB79A69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4C6D7AB-1833-4C86-B014-793D0DB79A69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4C6D7AB-1833-4C86-B014-793D0DB79A69}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
