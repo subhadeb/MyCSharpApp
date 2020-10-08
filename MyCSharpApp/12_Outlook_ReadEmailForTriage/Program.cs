@@ -11,8 +11,12 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 /*
 
 
+    Methods:
+    MailOperations: Connects to Office Outlook, Populates emailModels and calls TriageMailOperations/TFSIEMailOperations based on User Input It also writes to the o/p file.
+    TriageMailOperations: Reads the Triage Assignment Mail, filters the Name from the list and populates BugAssignmentModelList and then crreats the StringBuilder for writing.
+    TFSIEMailOperations: Reads all the mails from TFSIE and based on the User Input, it creates the Bug Details for pushig to OutputFilePath
 
-
+    In MailOperations, We push to the output file, also we run the Exe for pushing to the defect lists.
 
 
 */
@@ -23,7 +27,9 @@ class Program
 {
     public const string OutputFilePath = @"C:\Users\subdeb\Documents\ProjectWP\\DefectsList\00Input_Copy.txt";
     public const string OutputFileRunEXEPath = @"C:\Users\subdeb\Documents\ProjectWP\DefectsList\2_DefectFormatterApp.exe";
+    public const string DailyStatusInputFolderPath = @"C:\Users\subdeb\source\repos\MyCSharpApp\MyCSharpApp\07_ExcelInteropDailyStatus\bin\Debug\InputOutput\";
 
+    static List<BugAssignmentModel> BugAssignmentModelList;
 
     static void Main(string[] args)
     {
@@ -45,12 +51,12 @@ class Program
             //Console.WriteLine(emailModel.Body);
             emailModel.Body = emailModel.Body.Replace("\r", "");
             var linesSplit = emailModel.Body.Split('\n');
-            List<BugAssignmentModel> bugAssignmentModels = new List<BugAssignmentModel>();
+            BugAssignmentModelList = new List<BugAssignmentModel>();
             for (int i = 0; i < linesSplit.Length; i++)
             {
                 if (linesSplit[i].ToUpper().Contains("SUBHA"))
                 {
-                    bugAssignmentModels.Add(new BugAssignmentModel()
+                    BugAssignmentModelList.Add(new BugAssignmentModel()
                     {
                         BugId = linesSplit[i - 6],
                         Title = linesSplit[i - 4]
@@ -58,7 +64,7 @@ class Program
                 }
             }
             StringBuilder sb = new StringBuilder();
-            foreach (var item in bugAssignmentModels)
+            foreach (var item in BugAssignmentModelList)
             {
                 sb.AppendLine(item.BugId + "\t" + item.Title);
             }
@@ -257,13 +263,48 @@ class Program
                     }
                     break;
                 default:
-                    return;
+                    break;
             }
+            DailyStatusOperations();
         }
         else
         {
             Console.WriteLine("Invalid Input");
         }
+    }
+    static void DailyStatusOperations()
+    {
+        if (BugAssignmentModelList.Any())
+        {
+            Console.WriteLine("Do you want to Create Text File For Daily Status Input, Press Y to Create any other key to exit");
+            if (Console.ReadLine().ToLower() == "y")
+            {
+                string fileNameTimeStamp = DateTime.Now.ToString("yyyyMMdd_dddd_HHmm");
+                string fileName = DailyStatusInputFolderPath + "TriageEmail_" + " " + fileNameTimeStamp + ".txt";
+                StringBuilder stringBuilder = new StringBuilder();
+                foreach (var model in BugAssignmentModelList)
+                {
+                    var bugTitle = model.Title;
+                    if (bugTitle.Length > 40)
+                    {
+                        bugTitle = "..." + bugTitle.Substring(bugTitle.Length - 40);
+                    }
+                    stringBuilder.AppendLine("------------------------------------------------------------------");
+                    stringBuilder.AppendLine("Triage Bug ID[Eg. 101010]: "+ model.BugId);
+                    stringBuilder.AppendLine("Module [eg. Data Collectiion]: <Module>");
+                    stringBuilder.AppendLine("Activity Details [Eg. Sign and Submit Bug]: " + bugTitle );
+                    stringBuilder.AppendLine("Complete? Give [Y/N] (Y- Complete; N- In-Progress): Y");
+                }
+                stringBuilder.AppendLine("------------------------------------------------------------------");
+                // Create a new file     
+                using (FileStream fs = File.Create(fileName))
+                {
+                    byte[] info = new UTF8Encoding(true).GetBytes(stringBuilder.ToString());
+                    fs.Write(info, 0, info.Length);
+                }
+            }
+        }
+        
     }
 }
 class EmailModel
