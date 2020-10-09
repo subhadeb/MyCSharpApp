@@ -9,8 +9,11 @@ namespace MyCSharpApp
 {
     class Program
     {
+        public static string OutputFilePath = @"C:\Users\subdeb\Documents\ProjectWP\\DefectsList\00Input_Copy.txt";
+
         static void Main(string[] args)
         {
+            ReadResourcFile();
 
             Console.WriteLine("Press Enter to continue");//Just for Testing
             Console.ReadKey();// Working
@@ -47,6 +50,10 @@ namespace MyCSharpApp
                 System.Diagnostics.Process.Start(dirList.FirstOrDefault(x=>x.Id==intNum).ExePath);
             }
             Console.ReadKey();
+        }
+        static void ReadResourcFile()
+        {
+          string projectsPath =  MyCSharpApp.Resources.ResourcesFile.RepositoryProjectsPath;
         }
     }
     class DirectoryModel
