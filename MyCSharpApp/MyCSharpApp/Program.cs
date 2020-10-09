@@ -13,7 +13,7 @@ namespace MyCSharpApp
         {
 
             Console.WriteLine("Press Enter to continue");//Just for Testing
-            Console.ReadKey();
+            Console.ReadKey();// Working
             var projectsPath = @"C:\Users\subdeb\source\repos\MyCSharpApp\MyCSharpApp";
             string startupPath = System.IO.Directory.GetCurrentDirectory();
             var directories = Directory.GetDirectories(projectsPath);

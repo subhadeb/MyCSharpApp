@@ -17,7 +17,7 @@ using Outlook = Microsoft.Office.Interop.Outlook;
     TFSIEMailOperations: Reads all the mails from TFSIE and based on the User Input, it creates the Bug Details for pushig to OutputFilePath
 
     In MailOperations, We push to the output file, also we run the Exe for pushing to the defect lists.
-
+    DailyStatusOperations: Based on the common BugAssignmentModelList, I am pushing the Daily Assignment to DailyStatusInputFolderPath by creating a new file.
 
 */
 
@@ -59,7 +59,8 @@ class Program
                     BugAssignmentModelList.Add(new BugAssignmentModel()
                     {
                         BugId = linesSplit[i - 6],
-                        Title = linesSplit[i - 4]
+                        Title = linesSplit[i - 4],
+                        BugCategory = Constants.BUGCATEGORY_TRIAGE
                     });
                 }
             }
@@ -110,6 +111,11 @@ class Program
         {
             var emailModel = emailModels.FirstOrDefault(x => x.Id == numInput);
             var subject = emailModel.Subject;
+            var bugCategory = Constants.BUGCATEGORY_TRIAGE;
+            if (emailModel.Body.Contains("Status\t Assigned to Developer"))
+            {
+                bugCategory = Constants.BUGCATEGORY_ToBeFixed;
+            }
             var changedFieldsBodyIndex = emailModel.Body.IndexOf("Changed fields");
             var changedFiedsDisplay = emailModel.Body.Remove(0, 988);
             var notesAtBottomIndex = changedFiedsDisplay.IndexOf("Notes:");
@@ -130,6 +136,14 @@ class Program
             {
                 strBugTitle = strBugTitle.Substring(0, 100);
             }
+            BugAssignmentModelList = new List<BugAssignmentModel>();
+            BugAssignmentModelList.Add(new BugAssignmentModel()
+            {
+                BugId = strBugId,
+                Title = strBugTitle,
+                BugCategory=bugCategory
+            });
+
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(strBugId + "\t" + strBugTitle);
             Console.WriteLine(sb.ToString());
@@ -274,7 +288,7 @@ class Program
     }
     static void DailyStatusOperations()
     {
-        if (BugAssignmentModelList.Any())
+        if (BugAssignmentModelList != null && BugAssignmentModelList.Any())
         {
             Console.WriteLine("Do you want to Create Text File For Daily Status Input, Press Y to Create any other key to exit");
             if (Console.ReadLine().ToLower() == "y")
@@ -290,13 +304,12 @@ class Program
                         bugTitle = "..." + bugTitle.Substring(bugTitle.Length - 40);
                     }
                     stringBuilder.AppendLine("------------------------------------------------------------------");
-                    stringBuilder.AppendLine("Triage Bug ID[Eg. 101010]: "+ model.BugId);
+                    stringBuilder.AppendLine("Triage Bug ID[Eg. 101010]: " + model.BugId);
                     stringBuilder.AppendLine("Module [eg. Data Collectiion]: <Module>");
-                    stringBuilder.AppendLine("Activity Details [Eg. Sign and Submit Bug]: " + bugTitle );
+                    stringBuilder.AppendLine("Activity Details [Eg. Sign and Submit Bug]: " + bugTitle);
                     stringBuilder.AppendLine("Complete? Give [Y/N] (Y- Complete; N- In-Progress): Y");
                 }
                 stringBuilder.AppendLine("------------------------------------------------------------------");
-                // Create a new file     
                 using (FileStream fs = File.Create(fileName))
                 {
                     byte[] info = new UTF8Encoding(true).GetBytes(stringBuilder.ToString());
@@ -304,7 +317,7 @@ class Program
                 }
             }
         }
-        
+
     }
 }
 class EmailModel
@@ -320,4 +333,10 @@ class BugAssignmentModel
 {
     public string BugId { get; set; }
     public string Title { get; set; }
+    public string BugCategory { get; set; }
+}
+public static class Constants
+{
+    public const string BUGCATEGORY_TRIAGE = "Triage";
+    public const string BUGCATEGORY_ToBeFixed = "ToBeFixed";
 }
