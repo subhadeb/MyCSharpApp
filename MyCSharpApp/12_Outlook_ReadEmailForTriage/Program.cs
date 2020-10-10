@@ -11,13 +11,12 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 /*
 
 
-    Methods:
-    MailOperations: Connects to Office Outlook, Populates emailModels and calls TriageMailOperations/TFSIEMailOperations based on User Input It also writes to the o/p file.
-    TriageMailOperations: Reads the Triage Assignment Mail, filters the Name from the list and populates BugAssignmentModelList and then crreats the StringBuilder for writing.
-    TFSIEMailOperations: Reads all the mails from TFSIE and based on the User Input, it creates the Bug Details for pushig to OutputFilePath
+    MailOperations(): Connects to Office Outlook, Populates emailModels and calls TriageMailOperations/TFSIEMailOperations based on User Input It also writes to the o/p file.
+    TriageMailOperations(): Reads the Triage Assignment Mail, filters the Name from the list and populates BugAssignmentModelList and then crreats the StringBuilder for writing.
+    TFSIEMailOperations(): Reads all the mails from TFSIE and based on the User Input, it creates the Bug Details for pushig to OutputFilePath
 
     In MailOperations, We push to the output file, also we run the Exe for pushing to the defect lists.
-    DailyStatusOperations: Based on the common BugAssignmentModelList, I am pushing the Daily Assignment to DailyStatusInputFolderPath by creating a new file.
+    DailyStatusOperations(): Based on the common BugAssignmentModelList, I am pushing the Daily Assignment to DailyStatusInputFolderPath by creating a new file.
 
 */
 

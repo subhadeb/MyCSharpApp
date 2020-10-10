@@ -18,9 +18,10 @@ using System.Threading.Tasks;
     GetBugIdFromLineItem(): Splits the string based on _ and returs the second element
     FormatOutputFileForTFSIE_EMail(): Not used mostly after 12_Outlook_ReadEmailForTriage is made, If the Input text contains 'Work item Changed' when we copy
                                       the bug from TFSIE email. It Formats Bug Based on that and calls WriteToOutputFile().
+    WriteToOutputFile(): Based on the boolean flag writeToFile, it appends a new line for the bug into OutputFilePath and also creates a folder in OutputDirectoryPath
     FormatOutputFileForAssignedEMail(): Not used mostly after 12_Outlook_ReadEmailForTriage is made, If the Input text starts with 6digit numbers When we copy the
                                         the bug from Daily Triage Mail Assignment,  It Formats Bug Based on that and calls WriteToOutputFile().
-     FormatOutputFileForTFS(): If the Input text does not contains 'Work item Changed' or does not start with 6 Digit numbers. Meaning if we copy it from VDI TFS 
+    FormatOutputFileForTFS(): If the Input text does not contains 'Work item Changed' or does not start with 6 Digit numbers. Meaning if we copy it from VDI TFS 
                              Bug it calls this method. It Formats Bug Based on that and calls WriteToOutputFile().
      
     

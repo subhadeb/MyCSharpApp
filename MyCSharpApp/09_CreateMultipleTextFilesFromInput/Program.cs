@@ -11,9 +11,9 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 /*
 
-
-
-
+    ReadFromInputFile(): Reads from InputFileRelativePath and populates ListStrLineElements
+    ProocessAndWriteToOutputFile(): Creates Contents of Input File and Creats Multiple Input Files based on ListStrLineElements
+    ProcessAndCreateFolders(): Create Multiple Folders with the Same Name as the Input Lines in ListStrLineElements
 
 
 */
@@ -30,8 +30,10 @@ class Program
     {
         ReadResourceFile();
         ReadFromInputFile();
-        ProocessAndWriteToOutputFile();
+        //ProocessAndWriteToOutputFile();
+        ProcessAndCreateFolders();
         Console.WriteLine("End Of Application");
+        Console.ReadKey();
     }
     static void ReadResourceFile()
     {
@@ -93,5 +95,14 @@ class Program
                 fs.Write(info, 0, info.Length);
             }
         }
+    }
+    static void ProcessAndCreateFolders()
+    {
+        foreach (var line in ListStrLineElements)
+        {
+            var lineAfterRemovingSpecialChars = Regex.Replace(line, @"[^0-9a-zA-Z ]+", "");
+            Directory.CreateDirectory(RepositoryProjectsPath + DirectoryFileCreationRelativePath + lineAfterRemovingSpecialChars);
+        }
+            
     }
 }

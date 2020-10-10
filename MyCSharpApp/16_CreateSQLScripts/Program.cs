@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 
 /*
 
- ReadFromInputFile: Reads the Contents form Input file store in the location InputFileRelativePath and push all the lines to ListStrLineElements
-
-
+    ReadFromInputFile(): Reads the Contents form Input file store in the location InputFileRelativePath and push all the lines to ListStrLineElements
+    processAndCreateScript(): Creates the SQL Script for Create Script(Based on Console Input) and Insert Script in the StringBuilder SBQueryToWrite.
+    WriteToOutputFile(): If writeToFile is true, it writes SBQueryToWrite to OutputFileRelativePath
 
 
 
@@ -29,7 +29,7 @@ class Program
     public const string InputFileRelativePath = @"16_CreateSQLScripts\bin\Debug\InputOutput\InputFile.txt";
     public const string OutputFileRelativePath = @"16_CreateSQLScripts\bin\Debug\InputOutput\OutputFile.sql";
     static List<string> ListStrLineElements = new List<string>();
-    static string StringToWrite;
+    static StringBuilder SBQueryToWrite = new StringBuilder();
 
     static void Main(string[] args)
     {
@@ -81,7 +81,7 @@ class Program
         //Assiming Each Input Line was in the format:- 3	Join our Online Learning Community
         var columnNamesArray = ListStrLineElements.First().Split('\t');
         ListStrLineElements.RemoveAt(0);//Removing the first item/Column Headers from the List.
-        StringBuilder sbQuery = new StringBuilder();
+        SBQueryToWrite = new StringBuilder();
         int input = 0;
         Console.WriteLine("Table Name: " + TableName);
         Console.WriteLine("Do you want Create table Statement Press Y For Yes any other Key For No");
@@ -89,7 +89,7 @@ class Program
         {
 
             Console.WriteLine("Datatype Input:[1: INT] [2: VARCHAR(50)] [3: VARCHAR(150)] [4 DATETIME]");
-            sbQuery.AppendLine("CREATE TABLE " + TableName + "\n(");
+            SBQueryToWrite.AppendLine("CREATE TABLE " + TableName + "\n(");
             foreach (var column in columnNamesArray)
             {
                 Console.WriteLine("Enter Datatype for Column: ["+ column + "] as Per above Datatype Input");
@@ -108,16 +108,16 @@ class Program
                         switch (input)
                         {
                             case 1:
-                                sbQuery.AppendLine(column + " INT,");
+                                SBQueryToWrite.AppendLine(column + " INT,");
                                 break;
                             case 2:
-                                sbQuery.AppendLine(column + " VARCHAR(50),");
+                                SBQueryToWrite.AppendLine(column + " VARCHAR(50),");
                                 break;
                             case 3:
-                                sbQuery.AppendLine(column + " VARCHAR(150),");
+                                SBQueryToWrite.AppendLine(column + " VARCHAR(150),");
                                 break;
                             case 4:
-                                sbQuery.AppendLine(column + " DATETIME,");
+                                SBQueryToWrite.AppendLine(column + " DATETIME,");
                                 break;
                             default:
                                 break;
@@ -126,15 +126,15 @@ class Program
                     }
                 }
             }
-            sbQuery.Remove(sbQuery.Length - 3, 1);//Remove the last ','
-            sbQuery.AppendLine(")");
-            sbQuery.AppendLine();
+            SBQueryToWrite.Remove(SBQueryToWrite.Length - 3, 1);//Remove the last ','
+            SBQueryToWrite.AppendLine(")");
+            SBQueryToWrite.AppendLine();
         }
 
 
 
-        sbQuery.AppendLine("INSERT INTO " + TableName + "\n(");
-        sbQuery.AppendLine(string.Join(",", columnNamesArray) + "\n) VALUES");
+        SBQueryToWrite.AppendLine("INSERT INTO " + TableName + "\n(");
+        SBQueryToWrite.AppendLine(string.Join(",", columnNamesArray) + "\n) VALUES");
         if (ListStrLineElements != null && ListStrLineElements.Any())
         {
             foreach (var lineItem in ListStrLineElements)
@@ -146,11 +146,12 @@ class Program
                     var dataAfterRemovingSpecialChars = Regex.Replace(data, @"[^0-9a-zA-Z ,./:()]+", "");
                     dataListWithQute.Add("'" + dataAfterRemovingSpecialChars + "'");
                 }
-                sbQuery.AppendLine("(" + string.Join(",", dataListWithQute) + "),");
+                SBQueryToWrite.AppendLine("(" + string.Join(",", dataListWithQute) + "),");
             }
-            //sbQuery.Remove(sbQuery.Length - 1,1);
-            StringToWrite = sbQuery.ToString();
-            StringToWrite = StringToWrite.Remove(StringToWrite.LastIndexOf(','), 1);
+            if (SBQueryToWrite[SBQueryToWrite.Length - 3] == ',')
+            {
+                SBQueryToWrite.Remove(SBQueryToWrite.Length - 3, 1);
+            }
         }
     }
     static void WriteToOutputFile()
@@ -158,7 +159,7 @@ class Program
         bool writeToFile = true;//Make it true for Writing to File/During Deployment and false while debugging
         if (writeToFile)
         {
-            File.WriteAllText(RepositoryProjectsPath + OutputFileRelativePath, StringToWrite);
+            File.WriteAllText(RepositoryProjectsPath + OutputFileRelativePath, SBQueryToWrite.ToString());
             Console.WriteLine("Output File Updated");
         }
     }
