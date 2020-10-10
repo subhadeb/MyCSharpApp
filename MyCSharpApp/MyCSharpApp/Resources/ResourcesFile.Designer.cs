@@ -61,11 +61,20 @@ namespace MyCSharpApp.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\subdeb\source\repos\MyCSharpApp\MyCSharpApp\.
+        ///   Looks up a localized string similar to Error.
         /// </summary>
         public static string RepositoryProjectsPath {
             get {
                 return ResourceManager.GetString("RepositoryProjectsPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to C:\Users\subdeb\source\repos\MyCSharpApp\MyCSharpApp\.
+        /// </summary>
+        public static string RepositoryProjectsPath_USMUMSUBDEB3 {
+            get {
+                return ResourceManager.GetString("RepositoryProjectsPath_USMUMSUBDEB3", resourceCulture);
             }
         }
     }

@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "14_ReadExcelFile", "14_Read
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "15_OpenFilesFoldersAutomated", "15_OpenFilesFoldersAutomated\15_OpenFilesFoldersAutomated.csproj", "{4C144CF7-9970-4654-B626-3088C967FBEE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "16_CreateSQLScripts", "16_CreateSQLScripts\16_CreateSQLScripts.csproj", "{EAE77F0B-0E20-49AA-9B1F-2911E64D3311}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +101,10 @@ Global
 		{4C144CF7-9970-4654-B626-3088C967FBEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C144CF7-9970-4654-B626-3088C967FBEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C144CF7-9970-4654-B626-3088C967FBEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAE77F0B-0E20-49AA-9B1F-2911E64D3311}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAE77F0B-0E20-49AA-9B1F-2911E64D3311}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAE77F0B-0E20-49AA-9B1F-2911E64D3311}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAE77F0B-0E20-49AA-9B1F-2911E64D3311}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C24E695B-649F-453D-843B-283DAACD30F7}</ProjectGuid>
+    <ProjectGuid>{EAE77F0B-0E20-49AA-9B1F-2911E64D3311}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>_4_USIDeliveryCenterNavigationsAutomated</RootNamespace>
-    <AssemblyName>4_USIDeliveryCenterNavigationsAutomated</AssemblyName>
+    <RootNamespace>_16_CreateSQLScripts</RootNamespace>
+    <AssemblyName>16_CreateSQLScripts</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

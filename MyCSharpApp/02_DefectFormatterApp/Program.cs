@@ -1,15 +1,38 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Resources;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 
+/*
+ 
+    ReadFromInputFile(): Reads from the Input file InputFilePath(Ignores the first line if it contains ID, it populates DefectList based on the text file. 
+    ReadDataFromOutputFile(): Gets the last serial count from o/p file(OutputFilePath) and make entries for all the BugIds to ExistingBugIdList common variable. It 
+                              calls GetBugIdFromLineItem to get the BugId from OutputFilePath and push to ExistingBugIdList.
+    GetBugIdFromLineItem(): Splits the string based on _ and returs the second element
+    FormatOutputFileForTFSIE_EMail(): Not used mostly after 12_Outlook_ReadEmailForTriage is made, If the Input text contains 'Work item Changed' when we copy
+                                      the bug from TFSIE email. It Formats Bug Based on that and calls WriteToOutputFile().
+    FormatOutputFileForAssignedEMail(): Not used mostly after 12_Outlook_ReadEmailForTriage is made, If the Input text starts with 6digit numbers When we copy the
+                                        the bug from Daily Triage Mail Assignment,  It Formats Bug Based on that and calls WriteToOutputFile().
+     FormatOutputFileForTFS(): If the Input text does not contains 'Work item Changed' or does not start with 6 Digit numbers. Meaning if we copy it from VDI TFS 
+                             Bug it calls this method. It Formats Bug Based on that and calls WriteToOutputFile().
+     
+    
+     
+     
+*/
+
+
 class Program
 {
     //FOR DEV, IN THE METHOD WriteToOutputFile set writeToFile = false, for Prod it is true
+    public static string RepositoryProjectsPath = string.Empty;
     public const string InputFilePath = @"C:\Users\subdeb\Documents\ProjectWP\DefectsList\00Input_Copy.txt";
     public const string OutputFilePath = @"C:\Users\subdeb\Documents\ProjectWP\DefectsList\00DefectListSIT.txt";
     public const string OutputDirectoryPath = @"C:\Users\subdeb\Documents\ProjectWP\DefectsList\";
@@ -23,8 +46,8 @@ class Program
 
     static void Main(string[] args)
     {
-        ReadFromInputFile();//This Method reads the input file and make entries to the DefectList common variable
-        ReadDataFromOutputFile();//This method gets the last serial count from o/p file and make entries for all the BugIds to ExistingBugIdList common variable
+        ReadFromInputFile();
+        ReadDataFromOutputFile();
         if (DefectList.Any())
         {
             InsertedSerialCount = new List<string>();
@@ -35,7 +58,7 @@ class Program
             {
                 FormatOutputFileForTFSIE_EMail();
             }
-            else if (tempBugIdAssignedEmail > 100000 && (DefectList.FirstOrDefault().Substring(6, 4) != "\tBug"))//Currently All BugIds are of 6 Digits greater than 100000
+            else if (tempBugIdAssignedEmail > 100000 && (DefectList.FirstOrDefault().Substring(6, 4) != "\tBug"))
             {
                 FormatOutputFileForAssignedEMail();
             }
@@ -61,18 +84,23 @@ class Program
         //System.Diagnostics.Process.Start(EXEFilePath);
         Console.ReadLine();
     }
-    static void WriteToOutputFile(string strLineItem)
+    static void ReadResourceFile()
     {
-        bool writeToFile = true;//Make it true for Writing to File/During Deployment and false while debugging
-        if (writeToFile)
+        //Make sure the resourFile have access modifier as public and System.Forms.Dll is imported for ResXResourceReader to work
+        var resourceFileRelativePath = @"MyCSharpApp\MyCSharpApp\MyCSharpApp\Resources\ResourcesFile.resx";
+        var executingAssemblyPath = Assembly.GetExecutingAssembly().Location;
+        var firstIndexOfMyCSharpApp = executingAssemblyPath.IndexOf("MyCSharpApp");
+        string resourceFilePath = executingAssemblyPath.Substring(0, firstIndexOfMyCSharpApp) + resourceFileRelativePath;
+        ResXResourceReader rsxr = new ResXResourceReader(resourceFilePath);
+        foreach (DictionaryEntry de in rsxr)
         {
-            InsertedSerialCount.Add(strLineItem.Substring(0, 3));
-            File.AppendAllText(OutputFilePath, Environment.NewLine);
-            File.AppendAllText(OutputFilePath, strLineItem);
-            Directory.CreateDirectory(OutputDirectoryPath + strLineItem);
+            if (de.Key.ToString() == "RepositoryProjectsPath_" + Environment.MachineName)
+            {
+                RepositoryProjectsPath = de.Value.ToString();
+            }
         }
+        rsxr.Close();
     }
-
     static void ReadFromInputFile()
     {
         DefectList = new List<string>();
@@ -112,26 +140,10 @@ class Program
             streamReader.Close();
         }
     }
-    static void FormatOutputFileForTFS()
+    static string GetBugIdFromLineItem(string LineItem)
     {
-
-        foreach (var strLineItemFromInputFile in DefectList)
-        {
-            var ElementsOfDefectArray = strLineItemFromInputFile.Split('\t');
-            StringBuilder sbLineItem = new StringBuilder();
-            if (!ExistingBugIdList.Contains(ElementsOfDefectArray[0]))
-            {
-                LastSerialCount++;
-                sbLineItem.Append(LastSerialCount);
-                sbLineItem.Append("_" + ElementsOfDefectArray[0]);//0th Element Contains the BugId
-                sbLineItem.Append("_" + ElementsOfDefectArray[1]);//1st Elemeent Contains the String 'Bug'
-                var DefectTitleRemovingSpecialChars = Regex.Replace(ElementsOfDefectArray[2], @"[^0-9a-zA-Z ]+", "");//2nd Element Contains the BugTitle
-                DefectTitleRemovingSpecialChars = DefectTitleRemovingSpecialChars.Length > 100 ? DefectTitleRemovingSpecialChars.Substring(0, 100) : DefectTitleRemovingSpecialChars;
-                sbLineItem.Append("_" + DefectTitleRemovingSpecialChars);
-                string strLineItem = sbLineItem.ToString();
-                WriteToOutputFile(strLineItem);
-            }
-        }
+        var LineItemElementsArray = LineItem.Split('_');
+        return LineItemElementsArray[1];//The Second Array Element is the Bug Id
     }
     static void FormatOutputFileForTFSIE_EMail()
     {
@@ -159,6 +171,20 @@ class Program
 
         }
     }
+    static void WriteToOutputFile(string strLineItem)
+    {
+        bool writeToFile = true;//Make it true for Writing to File/During Deployment and false while debugging
+        if (writeToFile)
+        {
+            InsertedSerialCount.Add(strLineItem.Substring(0, 3));
+            File.AppendAllText(OutputFilePath, Environment.NewLine);
+            File.AppendAllText(OutputFilePath, strLineItem);
+            Directory.CreateDirectory(OutputDirectoryPath + strLineItem);
+        }
+    }
+   
+ 
+    
     static void FormatOutputFileForAssignedEMail()
     {
         foreach (var strLineItemFromInputFile in DefectList)
@@ -185,9 +211,27 @@ class Program
             }
         }
     }
-    static string GetBugIdFromLineItem(string LineItem)
+
+    static void FormatOutputFileForTFS()
     {
-        var LineItemElementsArray = LineItem.Split('_');
-        return LineItemElementsArray[1];//The Second Array Element is the Bug Id
+
+        foreach (var strLineItemFromInputFile in DefectList)
+        {
+            var ElementsOfDefectArray = strLineItemFromInputFile.Split('\t');
+            StringBuilder sbLineItem = new StringBuilder();
+            if (!ExistingBugIdList.Contains(ElementsOfDefectArray[0]))
+            {
+                LastSerialCount++;
+                sbLineItem.Append(LastSerialCount);
+                sbLineItem.Append("_" + ElementsOfDefectArray[0]);//0th Element Contains the BugId
+                sbLineItem.Append("_" + ElementsOfDefectArray[1]);//1st Elemeent Contains the String 'Bug'
+                var DefectTitleRemovingSpecialChars = Regex.Replace(ElementsOfDefectArray[2], @"[^0-9a-zA-Z ]+", "");//2nd Element Contains the BugTitle
+                DefectTitleRemovingSpecialChars = DefectTitleRemovingSpecialChars.Length > 100 ? DefectTitleRemovingSpecialChars.Substring(0, 100) : DefectTitleRemovingSpecialChars;
+                sbLineItem.Append("_" + DefectTitleRemovingSpecialChars);
+                string strLineItem = sbLineItem.ToString();
+                WriteToOutputFile(strLineItem);
+            }
+        }
     }
+  
 }

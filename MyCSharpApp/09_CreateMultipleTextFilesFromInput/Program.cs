@@ -28,11 +28,12 @@ class Program
     static List<string> ListStrLineElements = new List<string>();
     static void Main(string[] args)
     {
-        ReadResourcFile();
+        ReadResourceFile();
         ReadFromInputFile();
         ProocessAndWriteToOutputFile();
+        Console.WriteLine("End Of Application");
     }
-    static void ReadResourcFile()
+    static void ReadResourceFile()
     {
         //Make sure the resourFile have access modifier as public and System.Forms.Dll is imported for ResXResourceReader to work
         var resourceFileRelativePath = @"MyCSharpApp\MyCSharpApp\MyCSharpApp\Resources\ResourcesFile.resx";
@@ -42,7 +43,7 @@ class Program
         ResXResourceReader rsxr = new ResXResourceReader(resourceFilePath);
         foreach (DictionaryEntry de in rsxr)
         {
-            if (de.Key.ToString() == "RepositoryProjectsPath")
+            if (de.Key.ToString() == "RepositoryProjectsPath_" + Environment.MachineName)
             {
                 RepositoryProjectsPath = de.Value.ToString();
             }

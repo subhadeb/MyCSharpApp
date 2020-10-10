@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
 /*
@@ -15,8 +18,10 @@ Program for Delivery Center File Handlings
 
 class Program
 {
+    public static string RepositoryProjectsPath = string.Empty;
     //Used the Constant so for the flexibility of moving the Delivery Center folder to other locations in future.
     const string DeliveryCenterFolderPath = @"C:\Users\subdeb\Documents\Subha_Deb_497290\OfficeWorks\1 Delivery Center\";
+    
 
     static void Main(string[] args)
     {
@@ -48,6 +53,23 @@ class Program
             Console.WriteLine("Invalid Input");
         }
         Console.ReadKey();
+    }
+    static void ReadResourceFile()
+    {
+        //Make sure the resourFile have access modifier as public and System.Forms.Dll is imported for ResXResourceReader to work
+        var resourceFileRelativePath = @"MyCSharpApp\MyCSharpApp\MyCSharpApp\Resources\ResourcesFile.resx";
+        var executingAssemblyPath = Assembly.GetExecutingAssembly().Location;
+        var firstIndexOfMyCSharpApp = executingAssemblyPath.IndexOf("MyCSharpApp");
+        string resourceFilePath = executingAssemblyPath.Substring(0, firstIndexOfMyCSharpApp) + resourceFileRelativePath;
+        ResXResourceReader rsxr = new ResXResourceReader(resourceFilePath);
+        foreach (DictionaryEntry de in rsxr)
+        {
+            if (de.Key.ToString() == "RepositoryProjectsPath_" + Environment.MachineName)
+            {
+                RepositoryProjectsPath = de.Value.ToString();
+            }
+        }
+        rsxr.Close();
     }
     static List<DeliveryCenterNameLinks> GetDeliveryCenterNameLinks()
     {

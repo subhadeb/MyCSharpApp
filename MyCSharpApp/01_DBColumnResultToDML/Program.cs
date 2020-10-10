@@ -1,16 +1,19 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
 
 
 class Program
 {
+    public static string RepositoryProjectsPath = string.Empty;
     public const string InputFilePath = @"C:\Temp\InputQueryResult.txt";
     public const string OutputFilePath = @"C:\Temp\OutputDMLQuery.txt";
-
     public const string TableNameForPlainText = "DataCollection.Hell";  //"@TableName123";
 
 
@@ -35,6 +38,23 @@ class Program
         //InsertStatementCreatorFromPlainTextSDX();
         /*InsertStatementCreatorFromPlainTextSDX();*/
 
+    }
+    static void ReadResourceFile()
+    {
+        //Make sure the resourFile have access modifier as public and System.Forms.Dll is imported for ResXResourceReader to work
+        var resourceFileRelativePath = @"MyCSharpApp\MyCSharpApp\MyCSharpApp\Resources\ResourcesFile.resx";
+        var executingAssemblyPath = Assembly.GetExecutingAssembly().Location;
+        var firstIndexOfMyCSharpApp = executingAssemblyPath.IndexOf("MyCSharpApp");
+        string resourceFilePath = executingAssemblyPath.Substring(0, firstIndexOfMyCSharpApp) + resourceFileRelativePath;
+        ResXResourceReader rsxr = new ResXResourceReader(resourceFilePath);
+        foreach (DictionaryEntry de in rsxr)
+        {
+            if (de.Key.ToString() == "RepositoryProjectsPath_" + Environment.MachineName)
+            {
+                RepositoryProjectsPath = de.Value.ToString();
+            }
+        }
+        rsxr.Close();
     }
     static void InsertStatementCreatorFromPlainText()
     {
