@@ -8,9 +8,14 @@ using Excel = Microsoft.Office.Interop.Excel;
 using Outlook = Microsoft.Office.Interop.Outlook;
 /*
 
+    DailyStatusModel: Mail Model for Story each Status Items like Triage/Peer test etc. Adding Track as WP and Practitioner as my name in the constructor itself.
 
-
-
+    populateConstants(): Populates the global static list constantModelList, For the Different Activities(Can be replced with Constants in static class later).
+    populateStatusDate(): Populates the global static DateTime StatusDate, using an while to to iterate until the StatusDate is a valid date.
+    GetDailyStatusModelListInput(): Executed if the Console input was to read the Status Details from console. While loop exceuted to take n number of status details. It populates dailyStatusModelList
+    GetDailyStatusModelListFromInputFile(): Executed if the console input was to read from Text file. It reads from InputFile.txt and populates dailyStatusModelList
+    ExcelOperations(): with Microsoft.Office.Interop.Excel, it creates the excel file for Daily Status based on dailyStatusModelList
+    MailOperations(): with Microsoft.Office.Interop.Outlook, it Composes a new email adding the Recipents from ReceipentsEmailIdsList and attaches the newly created Excel.
 
 
 */
@@ -55,6 +60,15 @@ class Program
         ExcelOperations();
         MailOperations();
     }
+    static void populateConstants()
+    {
+        constantModelList = new List<ConstantsModel>();
+        constantModelList.Add(new ConstantsModel { Id = 1, value1 = "Triage" });
+        constantModelList.Add(new ConstantsModel { Id = 2, value1 = "Code Fix" });
+        constantModelList.Add(new ConstantsModel { Id = 3, value1 = "Build Activity" });
+        constantModelList.Add(new ConstantsModel { Id = 4, value1 = "Peer Test" });
+        constantModelList.Add(new ConstantsModel { Id = 5, value1 = "Ad-Hoc" });
+    }
 
     static void populateStatusDate()
     {
@@ -77,7 +91,6 @@ class Program
             }
         }
     }
-
     static List<DailyStatusModel> GetDailyStatusModelListInput()
     {
         dailyStatusModelList = new List<DailyStatusModel>();
@@ -269,10 +282,6 @@ class Program
         }
         return dailyStatusModelList;
     }
-
-
-
-
     static void ExcelOperations()
     {
         Excel.Application excelApp = new Excel.Application();
@@ -400,15 +409,7 @@ class Program
             }//end of catch
         }
     }
-    static void populateConstants()
-    {
-        constantModelList = new List<ConstantsModel>();
-        constantModelList.Add(new ConstantsModel { Id = 1, value1 = "Triage" });
-        constantModelList.Add(new ConstantsModel { Id = 2, value1 = "Code Fix" });
-        constantModelList.Add(new ConstantsModel { Id = 3, value1 = "Build Activity" });
-        constantModelList.Add(new ConstantsModel { Id = 4, value1 = "Peer Test" });
-        constantModelList.Add(new ConstantsModel { Id = 5, value1 = "Ad-Hoc" });
-    }
+   
 }
 class DailyStatusModel
 {
