@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 /*
 
     ReadFromInputFile(): Reads from InputFileRelativePath and populates ListStrLineElements
+    processOutput(): Takes user input to find if Multiple Files needs to be created or Multiple Folders
     ProocessAndWriteToOutputFile(): Creates Contents of Input File and Creats Multiple Input Files based on ListStrLineElements
     ProcessAndCreateFolders(): Create Multiple Folders with the Same Name as the Input Lines in ListStrLineElements
 
@@ -30,8 +31,7 @@ class Program
     {
         ReadResourceFile();
         ReadFromInputFile();
-        //ProocessAndWriteToOutputFile();
-        ProcessAndCreateFolders();
+        processOutput();
         Console.WriteLine("End Of Application");
         Console.ReadKey();
     }
@@ -64,6 +64,25 @@ class Program
             }
             streamReader.Close();
         }
+    }
+
+    static void processOutput()
+    {
+        Console.WriteLine("Press 1 to Create Multiple Text Files, Press 2 to create Multiple Folders any other key to exit");
+        string input = Console.ReadLine();
+        if (input == "1")
+        {
+            ProocessAndWriteToOutputFile();
+        }
+        else if (input == "2")
+        {
+            ProcessAndCreateFolders();
+        }
+        else
+        {
+            Environment.Exit(0);
+        }
+
     }
     static void ProocessAndWriteToOutputFile()
     {

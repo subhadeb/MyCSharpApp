@@ -14,7 +14,7 @@ namespace MyCSharpApp
         static void Main(string[] args)
         {
             ReadResourcFile();
-
+            PracticeCodes practiceCodes = new PracticeCodes();
             Console.WriteLine("Press Enter to continue");//Just for Testing
             Console.ReadKey();// Working
             var projectsPath = @"C:\Users\subdeb\source\repos\MyCSharpApp\MyCSharpApp";
