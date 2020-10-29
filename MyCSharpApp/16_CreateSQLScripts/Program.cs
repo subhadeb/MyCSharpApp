@@ -11,25 +11,28 @@ using System.Threading.Tasks;
 
 /*
 
+    
     ReadFromInputFile(): Reads the Contents form Input file store in the location InputFileRelativePath and push all the lines to ListStrLineElements
     processAndCreateScript(): Creates the SQL Script for Create Script(Based on Console Input) and Insert Script in the StringBuilder SBQueryToWrite.
     WriteToOutputFile(): If writeToFile is true, it writes SBQueryToWrite to OutputFileRelativePath
 
 
-
+    Input Format: The Input will start from Line Five starting with the column names. Table Name should be there in the first line.
 
 
 
  */
 
+
 class Program
 {
-    public const string TableName = "tblOctExp";//Replace it with the Table Name
+    
     public static string RepositoryProjectsPath = string.Empty;
     public const string InputFileRelativePath = @"16_CreateSQLScripts\bin\Debug\InputOutput\InputFile.txt";
     public const string OutputFileRelativePath = @"16_CreateSQLScripts\bin\Debug\InputOutput\OutputFile.sql";
     static List<string> ListStrLineElements = new List<string>();
     static StringBuilder SBQueryToWrite = new StringBuilder();
+    public static string TableName;
 
     static void Main(string[] args)
     {
@@ -77,10 +80,12 @@ class Program
     }
     static void processAndCreateScript()
     {
-        //Put The First Row as the Column Name(NoSpace)
-        //Assiming Each Input Line was in the format:- 3	Join our Online Learning Community
-        var columnNamesArray = ListStrLineElements.First().Split('\t');
-        ListStrLineElements.RemoveAt(0);//Removing the first item/Column Headers from the List.
+        string firstLineTableName = ListStrLineElements.First();//First Line will have the table name
+        TableName = firstLineTableName.Substring(firstLineTableName.IndexOf(':') + 1).Trim();
+        var columnNamesArray = ListStrLineElements[4].Split('\t');//Fourth Line will contain the column names
+        ListStrLineElements.RemoveRange(0, 4);//Remove 4 Elements(Lines) starting at position 0(Till last -------...)
+        //The Table Data will start from the fifth Line.
+
         SBQueryToWrite = new StringBuilder();
         int input = 0;
         Console.WriteLine("Table Name: " + TableName);
@@ -135,6 +140,7 @@ class Program
 
         SBQueryToWrite.AppendLine("INSERT INTO " + TableName + "\n(");
         SBQueryToWrite.AppendLine(string.Join(",", columnNamesArray) + "\n) VALUES");
+        //Assiming Each Input Line was in the format(Tab or \t after 3): 3 Join our Online Learning Community
         if (ListStrLineElements != null && ListStrLineElements.Any())
         {
             foreach (var lineItem in ListStrLineElements)

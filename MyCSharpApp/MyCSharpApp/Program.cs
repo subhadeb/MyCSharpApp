@@ -9,12 +9,11 @@ namespace MyCSharpApp
 {
     class Program
     {
-        public static string OutputFilePath = @"C:\Users\subdeb\Documents\ProjectWP\\DefectsList\00Input_Copy.txt";
-
+       
         static void Main(string[] args)
         {
             ReadResourcFile();
-            PracticeCodes practiceCodes = new PracticeCodes();
+            PracticeCodes practiceCodes = new PracticeCodes();//Constructor will call other methods
             Console.WriteLine("Press Enter to continue");//Just for Testing
             Console.ReadKey();// Working
             var projectsPath = @"C:\Users\subdeb\source\repos\MyCSharpApp\MyCSharpApp";
