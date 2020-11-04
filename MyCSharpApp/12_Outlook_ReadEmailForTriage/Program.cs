@@ -13,13 +13,12 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 
     MailOperations(): Connects to Office Outlook, Populates emailModels and calls TriageMailOperations/TFSIEMailOperations based on User Input It also writes to the o/p file.
     TriageMailOperations(): Reads the Triage Assignment Mail, filters the Name from the list and populates BugAssignmentModelList and then crreats the StringBuilder for writing.
-    TFSIEMailOperations(): Reads all the mails from TFSIE and based on the User Input, it creates the Bug Details for pushig to OutputFilePath   
+    TFSIEMailOperations(): Reads all the mails from TFSIE and based on the User Input, it creates the Bug Details for pushing to OutputFilePath   
+    PeerTestMailOperations(): Reads all the Peer testing mails It creates comma separted PeerTest bugis in a new text file and pushes to OutputFilePath
     DailyStatusOperations(): Based on the common BugAssignmentModelList, I am pushing the Daily Assignment to DailyStatusInputFolderPath by creating a new file.
 
 
-    Next Improvements:
-    For Triage Email make it like the other two, that is filter from the list based on the the Name and sender.
-
+    
 */
 
 
@@ -48,10 +47,10 @@ class Program
 
         StringBuilder stringBuilder = new StringBuilder();
         Items mailItems = inboxFolder.Items;
-        Console.WriteLine("Enter Days Like \t 1- Today \t 2- Yesterday \t 3-Two Days Ago \t 4-Three Days Ago");
+        Console.WriteLine("Enter Days Like \t 1- Today \t 2- Yesterday \t 3-Two Days Ago ");
         int numInput = 0;
         int.TryParse(Console.ReadLine(), out numInput);
-        if (numInput >= 1 && numInput <= 4)
+        if (numInput >= 1 && numInput <= 10)
         {
             numInput--;
         }
@@ -110,7 +109,7 @@ class Program
         Console.WriteLine();
         Console.WriteLine();
 
-        Console.WriteLine("Enter Operation Like \t 1.Triage Assignment Mail Operation \t 2. TFSIE Mail Operation \t 3. Peer Test Mail Operation");
+        Console.WriteLine("Enter Operation Like \t 1.Triage Assignment Mail \t 2. TFSIE Mail \t 3. Peer Test Mail");
         numInput = 0;
         int.TryParse(Console.ReadLine(), out numInput);
         if (numInput > 0 & numInput <= 3)
@@ -174,6 +173,30 @@ class Program
     }
     static string TriageMailOperations(List<EmailModel> emailModels)
     {
+        List<string> senderNames = new List<string>() { "Kumar, Abhishek", "Paranjpe, Radhika" };
+        Console.WriteLine();
+        Console.WriteLine("Below are the Triage Emails");
+
+        var triageEmails = emailModels.Where(x => senderNames.Contains(x.SenderName) && x.Subject.ToLower().Contains("triage")).ToList();
+
+        Console.WriteLine("----------------------------------------------------------------------------------------------------------");
+        Console.WriteLine("Id" + "\t" + "Received DateTime" + "\t" + "Subject");
+        Console.WriteLine("----------------------------------------------------------------------------------------------------------");
+        foreach (var emailModel in triageEmails)
+        {
+            var mailSubject = emailModel.Subject;
+            var senderName = emailModel.SenderName;
+            if (emailModel.SenderName.Length > 15)
+            {
+                senderName = emailModel.SenderName.Substring(0, 15);
+            }
+            if (mailSubject.Length > 80)
+            {
+                mailSubject = mailSubject.Substring(0, 80);
+            }
+            Console.WriteLine(emailModel.Id + "\t" + emailModel.ReceivedTime + "\t" + mailSubject);
+        }
+        Console.WriteLine();
         string strToWrite = string.Empty;
         Console.WriteLine("Enter Id of Triage Email[Eg. 12]");
         int numInput = 0;
@@ -294,7 +317,7 @@ class Program
     static void PeerTestMailOperations(List<EmailModel> emailModels)
     {
         string strToWrite = string.Empty;
-        List<string> senderNames = new List<string>() { "Limbachia, Yogesh", "Limbachia, Yogesh" };
+        List<string> senderNames = new List<string>() { "Limbachia, Yogesh", "Paranjpe, Radhika" };
         Console.WriteLine();
         Console.WriteLine("Below are the Peer Testing Emails");
 
@@ -331,9 +354,21 @@ class Program
             {
                 if (linesSplit[i].ToUpper().Contains("SUBHA"))
                 {
+                    bool bugIdFound = false;
+                    int tempBugId = 0;
+                    int backwardItemsCounter = 1;
+                    while (!bugIdFound)
+                    {
+                        int.TryParse(linesSplit[i - backwardItemsCounter], out tempBugId);
+                        if (tempBugId > 100000)
+                        {
+                            bugIdFound = true;
+                        }
+                        backwardItemsCounter++;
+                    }
                     BugAssignmentModelList.Add(new BugAssignmentModel()
                     {
-                        BugId = linesSplit[i - 6],
+                        BugId = tempBugId.ToString(),
                         Title = linesSplit[i - 4],
                         BugCategory = Constants.BUGCATEGORY_PeerTest
                     });
