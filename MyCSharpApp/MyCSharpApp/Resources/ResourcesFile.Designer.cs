@@ -19,7 +19,7 @@ namespace MyCSharpApp.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ResourcesFile {
@@ -57,6 +57,15 @@ namespace MyCSharpApp.Resources {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1. Add the Dll System.Windows.Forms.dll to Reference ||  2 Add RepositoryProjectsPath in the top || 3 Resolve the references in method ReadResourceFile .
+        /// </summary>
+        public static string HowToUseThisResxFile_Notes {
+            get {
+                return ResourceManager.GetString("HowToUseThisResxFile_Notes", resourceCulture);
             }
         }
         

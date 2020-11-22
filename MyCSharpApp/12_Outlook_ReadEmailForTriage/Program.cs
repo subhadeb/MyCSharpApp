@@ -1,21 +1,24 @@
 ﻿using Microsoft.Office.Interop.Outlook;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Resources;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Outlook = Microsoft.Office.Interop.Outlook;
 /*
 
-
+    ReadResourceFile(): Reads the Resource Files and Populates RepositoryProjectsPath which is later combined with DailyStatusInputFolderRelativePath
     MailOperations(): Connects to Office Outlook, Populates emailModels and calls TriageMailOperations/TFSIEMailOperations based on User Input It also writes to the o/p file.
     TriageMailOperations(): Reads the Triage Assignment Mail, filters the Name from the list and populates BugAssignmentModelList and then crreats the StringBuilder for writing.
     TFSIEMailOperations(): Reads all the mails from TFSIE and based on the User Input, it creates the Bug Details for pushing to OutputFilePath   
     PeerTestMailOperations(): Reads all the Peer testing mails It creates comma separted PeerTest bugis in a new text file and pushes to OutputFilePath
-    DailyStatusOperations(): Based on the common BugAssignmentModelList, I am pushing the Daily Assignment to DailyStatusInputFolderPath by creating a new file.
+    DailyStatusOperations(): Based on the common BugAssignmentModelList, I am pushing the Daily Assignment to DailyStatusInputFolderRelativePath by creating a new file.
 
 
     
@@ -25,17 +28,38 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 
 class Program
 {
+    //Configurable Paths and FileName Constants.
     public const string OutputFilePath = @"C:\Users\subdeb\Documents\ProjectWP\\DefectsList\00Input_Copy.txt";
     public const string OutputFileRunEXEPath = @"C:\Users\subdeb\Documents\ProjectWP\DefectsList\2_DefectFormatterApp.exe";
-    public const string DailyStatusInputFolderPath = @"C:\Users\subdeb\source\repos\MyCSharpApp\MyCSharpApp\07_ExcelInteropDailyStatus\bin\Debug\InputOutput\";
+    public const string DailyStatusInputFolderRelativePath = @"07_ExcelInteropDailyStatus\bin\Debug\InputOutput\TriageEmailOutputFiles\";
 
+    //Application Level Variables
+    public static string RepositoryProjectsPath = string.Empty;
     static List<BugAssignmentModel> BugAssignmentModelList;
 
     static void Main(string[] args)
     {
+        ReadResourceFile();
         MailOperations();
         Console.WriteLine("-----End of Application-----");
         Console.ReadKey();
+    }
+    static void ReadResourceFile()
+    {
+        //Make sure the resourFile have access modifier as public and System.Forms.Dll is imported for ResXResourceReader to work
+        var resourceFileRelativePath = @"MyCSharpApp\MyCSharpApp\MyCSharpApp\Resources\ResourcesFile.resx";
+        var executingAssemblyPath = Assembly.GetExecutingAssembly().Location;
+        var firstIndexOfMyCSharpApp = executingAssemblyPath.IndexOf("MyCSharpApp");
+        string resourceFilePath = executingAssemblyPath.Substring(0, firstIndexOfMyCSharpApp) + resourceFileRelativePath;
+        ResXResourceReader rsxr = new ResXResourceReader(resourceFilePath);
+        foreach (DictionaryEntry de in rsxr)
+        {
+            if (de.Key.ToString() == "RepositoryProjectsPath_" + Environment.MachineName)
+            {
+                RepositoryProjectsPath = de.Value.ToString();
+            }
+        }
+        rsxr.Close();
     }
     static void MailOperations()
     {
@@ -352,26 +376,39 @@ class Program
             BugAssignmentModelList = new List<BugAssignmentModel>();
             for (int i = 0; i < linesSplit.Length; i++)
             {
-                if (linesSplit[i].ToUpper().Contains("SUBHA"))
+                if (linesSplit[i].ToUpper().Contains("SUBHA") && !linesSplit[i].ToUpper().Contains("DELOITTE.COM"))
                 {
                     bool bugIdFound = false;
                     int tempBugId = 0;
                     int backwardItemsCounter = 1;
+                    StringBuilder sbTextToDisplayForBug = new StringBuilder();
                     while (!bugIdFound)
                     {
-                        int.TryParse(linesSplit[i - backwardItemsCounter], out tempBugId);
+                        var lineElement = linesSplit[i - backwardItemsCounter];
+                        int.TryParse(lineElement, out tempBugId);
                         if (tempBugId > 100000)
                         {
                             bugIdFound = true;
                         }
+                        else if (!string.IsNullOrEmpty(lineElement))
+                        {
+                            if (lineElement.Length > 80)
+                            {
+                                lineElement = lineElement.Substring(0, 80);
+                            }
+                            sbTextToDisplayForBug.Append(lineElement + "\t");
+                        }
                         backwardItemsCounter++;
                     }
-                    BugAssignmentModelList.Add(new BugAssignmentModel()
+                    if (sbTextToDisplayForBug.ToString().Length < 130)
                     {
-                        BugId = tempBugId.ToString(),
-                        Title = linesSplit[i - 4],
-                        BugCategory = Constants.BUGCATEGORY_PeerTest
-                    });
+                        BugAssignmentModelList.Add(new BugAssignmentModel()
+                        {
+                            BugId = tempBugId.ToString(),
+                            Title = sbTextToDisplayForBug.ToString(),
+                            BugCategory = Constants.BUGCATEGORY_PeerTest
+                        }); ;
+                    }
                 }
             }
             StringBuilder sb = new StringBuilder();
@@ -397,7 +434,7 @@ class Program
                 stringBuilder.AppendLine("------------------------------------------------------------------");
                 string fileNameTimeStamp = DateTime.Now.ToString("yyyyMMdd_dddd_HHmm");
                 string fileName = "TriageEmail_" + " " + fileNameTimeStamp + "_PeerTest.txt";
-                string filePath = DailyStatusInputFolderPath + fileName;
+                string filePath = RepositoryProjectsPath + DailyStatusInputFolderRelativePath + fileName;
                 using (FileStream fs = File.Create(filePath))
                 {
                     byte[] info = new UTF8Encoding(true).GetBytes(stringBuilder.ToString());
@@ -426,7 +463,7 @@ class Program
             {
                 string fileNameTimeStamp = DateTime.Now.ToString("yyyyMMdd_dddd_HHmm");
                 string fileName = "TriageEmail_" + " " + fileNameTimeStamp + ".txt";
-                string filePath = DailyStatusInputFolderPath + fileName;
+                string filePath = RepositoryProjectsPath + DailyStatusInputFolderRelativePath + fileName;
                 StringBuilder stringBuilder = new StringBuilder();
                 foreach (var model in BugAssignmentModelList)
                 {

@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="HowToUseThisResxFile_Notes" xml:space="preserve">
+    <value>1. Add the Dll System.Windows.Forms.dll to Reference ||  2 Add RepositoryProjectsPath in the top || 3 Resolve the references in method ReadResourceFile </value>
+  </data>
   <data name="RepositoryProjectsPath" xml:space="preserve">
     <value>Error</value>
   </data>

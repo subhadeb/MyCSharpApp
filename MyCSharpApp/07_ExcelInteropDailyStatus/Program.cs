@@ -14,6 +14,7 @@ using Outlook = Microsoft.Office.Interop.Outlook;
     populateStatusDate(): Populates the global static DateTime StatusDate, using an while to to iterate until the StatusDate is a valid date.
     GetDailyStatusModelListInput(): Executed if the Console input was to read the Status Details from console. While loop exceuted to take n number of status details. It populates dailyStatusModelList
     GetDailyStatusModelListFromInputFile(): Executed if the console input was to read from Text file. It reads from InputFile.txt and populates dailyStatusModelList
+    ShowValidationsAndExit(): If there would be some invalid values in the Input file, The validations will displayed in Red and the Solution would be stopped, if no validations the solution will continue
     ExcelOperations(): with Microsoft.Office.Interop.Excel, it creates the excel file for Daily Status based on dailyStatusModelList
     MailOperations(): with Microsoft.Office.Interop.Outlook, it Composes a new email adding the Recipents from ReceipentsEmailIdsList and attaches the newly created Excel.
 
@@ -34,6 +35,7 @@ class Program
     //Application Level Variables
     static List<ConstantsModel> constantModelList;
     static List<DailyStatusModel> dailyStatusModelList;
+    static List<string> inputValidationsList;
     static DateTime StatusDate;
     static string GeneratedExcelFileNamePath;
     static void Main(string[] args)
@@ -50,6 +52,10 @@ class Program
         else if (input == 2)
         {
             GetDailyStatusModelListFromInputFile();
+            if (inputValidationsList != null && inputValidationsList.Any())
+            {
+                ShowValidationsAndExit();
+            }
         }
         else
         {
@@ -174,6 +180,7 @@ class Program
     }
     static List<DailyStatusModel> GetDailyStatusModelListFromInputFile()
     {
+        inputValidationsList = new List<string>();
         Console.WriteLine();
         string inputFilePath = Environment.CurrentDirectory + @"\InputOutput\InputFile.txt";
         var fileUpdatedDateTime = File.GetLastWriteTime(inputFilePath);
@@ -222,12 +229,33 @@ class Program
                     dailyStatusModel.Activity = constantModelList.FirstOrDefault(x => x.Id == 2).value1;
                 }
                 dailyStatusModel.TFSID = line.Substring(line.IndexOf(':') + 1).Trim();
+                if (dailyStatusModel.TFSID == "<BugId>")
+                {
+                    inputValidationsList.Add("Invalid: " + line);
+                }
                 var lineModule = inputFileLines[indexOfLine + 1];
                 dailyStatusModel.Module = lineModule.Substring(lineModule.IndexOf(':') + 1).Trim();
+                if (dailyStatusModel.Module == "<Module>")
+                {
+                    inputValidationsList.Add("Invalid: " + lineModule);
+                }
                 var lineActivityDetails = inputFileLines[indexOfLine + 2];
                 dailyStatusModel.ActivityDetails = lineActivityDetails.Substring(lineActivityDetails.IndexOf(':') + 1).Trim();
+                if (dailyStatusModel.ActivityDetails == "<Details>")
+                {
+                    inputValidationsList.Add("Invalid: " + lineActivityDetails);
+                }
+                else if (dailyStatusModel.ActivityDetails.StartsWith("..."))
+                {
+                    inputValidationsList.Add("Invalid: Activity Details Starts with ...");
+                }
                 var lineCompleted = inputFileLines[indexOfLine + 3];
                 var Completed = lineCompleted.Substring(lineCompleted.IndexOf(':') + 1).Trim();
+                if (Completed == "<Y/N>")
+                {
+                    inputValidationsList.Add("Invalid: " + lineCompleted);
+                }
+
                 if (Completed.ToLower() == "y")
                 {
                     dailyStatusModel.Comments = "Completed";
@@ -282,6 +310,18 @@ class Program
         }
         return dailyStatusModelList;
     }
+    static void ShowValidationsAndExit()
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine("Below are the validations");
+        foreach (var validationItem in inputValidationsList)
+        {
+            Console.WriteLine(validationItem);
+        }
+        Console.ResetColor();
+        Console.ReadKey();
+        Environment.Exit(0);
+    }
     static void ExcelOperations()
     {
         Excel.Application excelApp = new Excel.Application();
@@ -333,8 +373,8 @@ class Program
             if (IsDev)
             {
                 var currentDateTime = DateTime.Now.ToString("MMddyyyy-HHmmss");
-                var newFileName = "Status_" + currentDateTime + ".xlsx";
-                GeneratedExcelFileNamePath = ExcelFilePath + newFileName;
+                var newFileName = "Dev_" + currentDateTime + ".xlsx";
+                GeneratedExcelFileNamePath = ExcelFilePathProdForSave + newFileName;
                 excelBook2.SaveAs2(GeneratedExcelFileNamePath);
             }
             else

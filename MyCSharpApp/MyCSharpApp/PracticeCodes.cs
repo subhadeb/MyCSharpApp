@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace MyCSharpApp
@@ -10,7 +11,8 @@ namespace MyCSharpApp
     {
         public PracticeCodes()
         {
-            OneTestNullException();
+            //OneTestNullException();
+            twoTestRegex();
         }
 
         public void OneTestNullException()
@@ -25,10 +27,10 @@ namespace MyCSharpApp
 
 
             List<ModelData> modelDatas2 = null;//new List<ModelData>();
-            //modelDatas2.Add(new ModelData() { str = "String Two", intNum = 2 });
-            //modelDatas2.Add(new ModelData() { str = "String Three", intNum = 3 });
+                                               //modelDatas2.Add(new ModelData() { str = "String Two", intNum = 2 });
+                                               //modelDatas2.Add(new ModelData() { str = "String Three", intNum = 3 });
 
-           
+
             //Console.WriteLine("modelDatas2");
             //foreach (var data in modelDatas2)
             //{
@@ -43,8 +45,17 @@ namespace MyCSharpApp
                 Console.WriteLine(data.intNum + "\t" + data.str);
             }
         }
-    }
 
+        public void twoTestRegex()
+        {
+            var data = "2020-11-01 00:00:00.000";
+            var op = Regex.Replace(data, @"[^0-9a-zA-Z ,./:()-]+", "");
+            Console.WriteLine(op);
+
+        }
+
+
+    }
 
     public class ModelData
     {

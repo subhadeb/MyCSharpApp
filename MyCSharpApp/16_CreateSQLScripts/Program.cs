@@ -83,7 +83,7 @@ class Program
         string firstLineTableName = ListStrLineElements.First();//First Line will have the table name
         TableName = firstLineTableName.Substring(firstLineTableName.IndexOf(':') + 1).Trim();
         var columnNamesArray = ListStrLineElements[4].Split('\t');//Fourth Line will contain the column names
-        ListStrLineElements.RemoveRange(0, 4);//Remove 4 Elements(Lines) starting at position 0(Till last -------...)
+        ListStrLineElements.RemoveRange(0, 5);//Remove 4 Elements(Lines) starting at position 0(Till last -------...)
         //The Table Data will start from the fifth Line.
 
         SBQueryToWrite = new StringBuilder();
@@ -149,8 +149,16 @@ class Program
                 var dataListWithQute = new List<string>();
                 foreach (var data in dataArray)
                 {
-                    var dataAfterRemovingSpecialChars = Regex.Replace(data, @"[^0-9a-zA-Z ,./:()]+", "");
-                    dataListWithQute.Add("'" + dataAfterRemovingSpecialChars + "'");
+                    var dataAfterRemovingSpecialChars = Regex.Replace(data, @"[^0-9a-zA-Z ,./:()-]+", "");
+                    if (dataAfterRemovingSpecialChars != "NULL")
+                    {
+                        dataListWithQute.Add("'" + dataAfterRemovingSpecialChars + "'");
+                    }
+                    else
+                    {
+                        //For NULL, we dont need Quotation.
+                        dataListWithQute.Add(dataAfterRemovingSpecialChars);
+                    }
                 }
                 SBQueryToWrite.AppendLine("(" + string.Join(",", dataListWithQute) + "),");
             }

@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 /*
 
+    ReadResourceFile(): Reads the Resource Files and Populates RepositoryProjectsPath which is later combined with InputFileRelativePath to Read the Input file
     ReadFromInputFile(): Reads from InputFileRelativePath and populates ListStrLineElements
     processOutput(): Takes user input to find if Multiple Files needs to be created or Multiple Folders
     ProocessAndWriteToOutputFile(): Creates Contents of Input File and Creats Multiple Input Files based on ListStrLineElements
