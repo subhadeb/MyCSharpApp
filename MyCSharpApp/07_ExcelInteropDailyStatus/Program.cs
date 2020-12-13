@@ -29,6 +29,7 @@ class Program
     public const string ExcelFilePath = @"C:\Users\subdeb\Documents\Subha_Deb_497290\Study\Dot_Net_Study\2 OOPS and C Sharp\CSharp Apps Programs  Backup\7_ExcelInteropDailyStatus\InputFiles\";
     public const string ExcelFilePathProdForSave = @"C:\Users\subdeb\Documents\ProjectWP\Other Tasks\00_Daily_Status\aa_ProgrammedExcelFile\";
     public const string InputExcelFileName = "InputFile_Sample.xlsx";
+    public const string InputTextFilePath = @"\InputOutput_DailyStatus\InputFile.txt";
     public static List<string> ReceipentsEmailIdsList = new List<string>() { "abhishekkumar4@DELOITTE.com", "raparanjpe@deloitte.com", "ylimbachia@deloitte.com" };
     public const bool IsDev = false;//Set if to False for Prod
 
@@ -182,14 +183,14 @@ class Program
     {
         inputValidationsList = new List<string>();
         Console.WriteLine();
-        string inputFilePath = Environment.CurrentDirectory + @"\InputOutput\InputFile.txt";
+        string inputFilePath = Environment.CurrentDirectory + InputTextFilePath;
         var fileUpdatedDateTime = File.GetLastWriteTime(inputFilePath);
         string displayDateTime = fileUpdatedDateTime.ToShortTimeString() + " " + fileUpdatedDateTime.DayOfWeek + " " + fileUpdatedDateTime.ToShortDateString();
         Console.WriteLine("InputFile File Was Last Updated On {0}", displayDateTime);
         Console.WriteLine("Press [Y] to Continue, any other key to open the containing Folder");
         if (Console.ReadLine().ToLower() != "y")
         {
-            System.Diagnostics.Process.Start(Environment.CurrentDirectory + @"\InputOutput");
+            System.Diagnostics.Process.Start(Environment.CurrentDirectory + @"\InputOutput_DailyStatus");
             Environment.Exit(0);
 
         }
@@ -325,7 +326,7 @@ class Program
     static void ExcelOperations()
     {
         Excel.Application excelApp = new Excel.Application();
-        Excel.Workbook excelBook = excelApp.Workbooks.Open(Environment.CurrentDirectory + @"\InputOutput\" + InputExcelFileName);
+        Excel.Workbook excelBook = excelApp.Workbooks.Open(Environment.CurrentDirectory + @"\InputOutput_DailyStatus\" + InputExcelFileName);
         Excel.Workbook excelBook2 = excelApp.Workbooks.Add(Type.Missing);
 
         try

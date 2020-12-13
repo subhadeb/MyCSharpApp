@@ -31,7 +31,7 @@ class Program
     //Configurable Paths and FileName Constants.
     public const string OutputFilePath = @"C:\Users\subdeb\Documents\ProjectWP\\DefectsList\00Input_Copy.txt";
     public const string OutputFileRunEXEPath = @"C:\Users\subdeb\Documents\ProjectWP\DefectsList\2_DefectFormatterApp.exe";
-    public const string DailyStatusInputFolderRelativePath = @"07_ExcelInteropDailyStatus\bin\Debug\InputOutput\TriageEmailOutputFiles\";
+    public const string DailyStatusInputFolderRelativePath = @"07_ExcelInteropDailyStatus\bin\Debug\InputOutput_DailyStatus\TriageEmailOutputFiles\";
 
     //Application Level Variables
     public static string RepositoryProjectsPath = string.Empty;

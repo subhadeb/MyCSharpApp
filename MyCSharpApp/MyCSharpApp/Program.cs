@@ -9,16 +9,17 @@ namespace MyCSharpApp
 {
     class Program
     {
-       
+       static string ProjectsPath;
         static void Main(string[] args)
         {
+            Console.WriteLine("Press 1 For Coding Any Other Key to Open Projects path");
+            if (Console.ReadLine() == "1") 
+            {
+                PracticeCodes practiceCodes = new PracticeCodes();//Constructor will call other methods
+            }
             ReadResourcFile();
-            PracticeCodes practiceCodes = new PracticeCodes();//Constructor will call other methods
-            Console.WriteLine("Press Enter to continue");//Just for Testing
-            Console.ReadKey();// Working
-            var projectsPath = @"C:\Users\subdeb\source\repos\MyCSharpApp\MyCSharpApp";
-            string startupPath = System.IO.Directory.GetCurrentDirectory();
-            var directories = Directory.GetDirectories(projectsPath);
+            //string startupPath = System.IO.Directory.GetCurrentDirectory();
+            var directories = Directory.GetDirectories(ProjectsPath);
             List<DirectoryModel> dirList = new List<DirectoryModel>();
             int intNum = 0;
             foreach (var dirPath in directories)
@@ -52,7 +53,7 @@ namespace MyCSharpApp
         }
         static void ReadResourcFile()
         {
-          string projectsPath =  MyCSharpApp.Resources.ResourcesFile.RepositoryProjectsPath;
+            ProjectsPath = MyCSharpApp.Resources.ResourcesFile.RepositoryProjectsPath_USMUMSUBDEB3;
         }
     }
     class DirectoryModel

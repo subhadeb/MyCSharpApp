@@ -26,10 +26,12 @@ using System.Threading.Tasks;
 
 class Program
 {
-    
+    //Configurable Paths and FileName Constants.
     public static string RepositoryProjectsPath = string.Empty;
-    public const string InputFileRelativePath = @"16_CreateSQLScripts\bin\Debug\InputOutput\InputFile.txt";
-    public const string OutputFileRelativePath = @"16_CreateSQLScripts\bin\Debug\InputOutput\OutputFile.sql";
+    public const string InputFileRelativePath = @"16_CreateSQLScripts\bin\Debug\\InputOutput_SQLScripts\InputFile.txt";
+    public const string OutputFileRelativePath = @"16_CreateSQLScripts\bin\Debug\\InputOutput_SQLScripts\OutputFile.sql";
+
+    //Application Level Variables
     static List<string> ListStrLineElements = new List<string>();
     static StringBuilder SBQueryToWrite = new StringBuilder();
     public static string TableName;

@@ -24,9 +24,9 @@ using System.Threading.Tasks;
 class Program
 {
     public static string RepositoryProjectsPath = string.Empty;
-    public const string InputFileRelativePath = @"09_CreateMultipleTextFilesFromInput\bin\Debug\InputOutput\InputFile.txt";
-    public const string OutputFileRelativePath = @"09_CreateMultipleTextFilesFromInput\bin\Debug\InputOutput\OutputFile.txt";
-    public const string DirectoryFileCreationRelativePath = @"09_CreateMultipleTextFilesFromInput\bin\Debug\InputOutput\FileCreationFolder\";
+    public const string InputFileRelativePath = @"09_CreateMultipleTextFilesFromInput\bin\Debug\InputOutput_CreateMultipleFiles\InputFile.txt";
+    public const string OutputFileRelativePath = @"09_CreateMultipleTextFilesFromInput\bin\Debug\InputOutput_CreateMultipleFiles\OutputFile.txt";
+    public const string DirectoryFileCreationRelativePath = @"09_CreateMultipleTextFilesFromInput\bin\Debug\InputOutput_CreateMultipleFiles\FileCreationFolder\";
     static List<string> ListStrLineElements = new List<string>();
     static void Main(string[] args)
     {
