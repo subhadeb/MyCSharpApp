@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MyCSharpApp
@@ -11,8 +12,15 @@ namespace MyCSharpApp
     {
         public PracticeCodes()
         {
-            //OneTestNullException();
-            twoTestRegex();
+            testSpinner();
+        }
+
+        public void testSpinner()
+        {
+            var spinner = new Spinner(1, 1);
+            spinner.Start();
+            Thread.Sleep(5000);
+            spinner.Stop();
         }
 
         public void OneTestNullException()
@@ -61,6 +69,63 @@ namespace MyCSharpApp
     {
         public string str { get; set; }
         public int intNum { get; set; }
+    }
+    public class Spinner : IDisposable
+    {
+        private const string Sequence = @"/-\|";
+        private int counter = 0;
+        private readonly int left;
+        private readonly int top;
+        private readonly int delay;
+        private bool active;
+        private readonly Thread thread;
+
+        public Spinner(int left, int top, int delay = 100)
+        {
+            this.left = left;
+            this.top = top;
+            this.delay = delay;
+            thread = new Thread(Spin);
+        }
+
+        public void Start()
+        {
+            active = true;
+            if (!thread.IsAlive)
+                thread.Start();
+        }
+
+        public void Stop()
+        {
+            active = false;
+            Draw(' ');
+        }
+
+        private void Spin()
+        {
+            while (active)
+            {
+                Turn();
+                Thread.Sleep(delay);
+            }
+        }
+
+        private void Draw(char c)
+        {
+            Console.SetCursorPosition(left, top);
+            Console.Write("Waiting...");
+            Console.Write(c);
+        }
+
+        private void Turn()
+        {
+            Draw(Sequence[++counter % Sequence.Length]);
+        }
+
+        public void Dispose()
+        {
+            Stop();
+        }
     }
 
 }

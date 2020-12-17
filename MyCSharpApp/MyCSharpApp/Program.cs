@@ -13,21 +13,29 @@ namespace MyCSharpApp
         static void Main(string[] args)
         {
             Console.WriteLine("Press 1 For Coding Any Other Key to Open Projects path");
-            if (Console.ReadLine() == "1") 
+            if (Console.ReadLine() == "1")
             {
                 PracticeCodes practiceCodes = new PracticeCodes();//Constructor will call other methods
             }
+            else
+            {
+                showProjectDirectories();
+            }
+            
+        }
+        static void showProjectDirectories()
+        {
             ReadResourcFile();
             //string startupPath = System.IO.Directory.GetCurrentDirectory();
             var directories = Directory.GetDirectories(ProjectsPath);
             List<DirectoryModel> dirList = new List<DirectoryModel>();
             int intNum = 0;
             foreach (var dirPath in directories)
-            {   
+            {
                 DirectoryModel model = new DirectoryModel();
                 model.ProjectName = dirPath.Substring(dirPath.LastIndexOf("\\") + 1);
                 if (model.ProjectName.Contains("_"))
-                { 
+                {
                     intNum = 0;
                     int.TryParse(model.ProjectName.Substring(0, 2), out intNum);
                     model.Id = intNum;
@@ -47,9 +55,10 @@ namespace MyCSharpApp
             int.TryParse(Console.ReadLine(), out intNum);
             if (intNum > 0 && intNum <= dirList.Count)
             {
-                System.Diagnostics.Process.Start(dirList.FirstOrDefault(x=>x.Id==intNum).ExePath);
+                System.Diagnostics.Process.Start(dirList.FirstOrDefault(x => x.Id == intNum).ExePath);
             }
             Console.ReadKey();
+
         }
         static void ReadResourcFile()
         {

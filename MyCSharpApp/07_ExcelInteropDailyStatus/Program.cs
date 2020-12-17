@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Excel = Microsoft.Office.Interop.Excel;
 using Outlook = Microsoft.Office.Interop.Outlook;
@@ -20,7 +21,7 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 
 
 */
-
+//Next Changes: Change Constant Model to the One Like Constants class.
 
 
 class Program
@@ -34,49 +35,22 @@ class Program
     public const bool IsDev = false;//Set if to False for Prod
 
     //Application Level Variables
-    static List<ConstantsModel> constantModelList;
     static List<DailyStatusModel> dailyStatusModelList;
     static List<string> inputValidationsList;
     static DateTime StatusDate;
     static string GeneratedExcelFileNamePath;
     static void Main(string[] args)
     {
-        populateConstants();
         populateStatusDate();
-        int input = 0;
-        Console.WriteLine("Enter 1 For ConsoleInput; 2 For TextFile Input");
-        int.TryParse(Console.ReadLine(), out input);
-        if (input == 1)
+        GetDailyStatusModelListFromInputFile();
+        if (inputValidationsList != null && inputValidationsList.Any())
         {
-            GetDailyStatusModelListInput();
-        }
-        else if (input == 2)
-        {
-            GetDailyStatusModelListFromInputFile();
-            if (inputValidationsList != null && inputValidationsList.Any())
-            {
-                ShowValidationsAndExit();
-            }
-        }
-        else
-        {
-            Console.WriteLine("Invalid Input");
-            Console.ReadKey();
-            Environment.Exit(0);
+            ShowValidationsAndExit();
         }
         ExcelOperations();
         MailOperations();
     }
-    static void populateConstants()
-    {
-        constantModelList = new List<ConstantsModel>();
-        constantModelList.Add(new ConstantsModel { Id = 1, value1 = "Triage" });
-        constantModelList.Add(new ConstantsModel { Id = 2, value1 = "Code Fix" });
-        constantModelList.Add(new ConstantsModel { Id = 3, value1 = "Build Activity" });
-        constantModelList.Add(new ConstantsModel { Id = 4, value1 = "Peer Test" });
-        constantModelList.Add(new ConstantsModel { Id = 5, value1 = "Ad-Hoc" });
-    }
-
+    
     static void populateStatusDate()
     {
         var isValid = false;
@@ -98,87 +72,7 @@ class Program
             }
         }
     }
-    static List<DailyStatusModel> GetDailyStatusModelListInput()
-    {
-        dailyStatusModelList = new List<DailyStatusModel>();
-        int activityNum = 1;//1 is added Temporararily so that while loop get's executed. With Do While Loop this can be ignored.
-        var loopCounterForId = 1;
-        while (activityNum >= 1 && activityNum <= 5)
-        {
-            Console.WriteLine("Enter the Input as below");
-            Console.WriteLine("1. Triage | 2. Code Fix | 3. Build Activity(Smoke Test) | 4. Peer Test | 5. Ad - Hoc |||| Any other input to Save and Exit");
-            activityNum = 0;//Reset to 0
-            int.TryParse(Console.ReadLine(), out activityNum);
-            if (activityNum >= 1 && activityNum <= 5)
-            {
-                DailyStatusModel dailyStatusModel = new DailyStatusModel();
-
-                dailyStatusModel.Date = StatusDate.ToString();
-                dailyStatusModel.Activity = constantModelList.FirstOrDefault(x => x.Id == activityNum).value1;
-                dailyStatusModel.Id = loopCounterForId;
-                loopCounterForId++;
-                switch (activityNum)
-                {
-                    case 1://Triage
-                    case 2://Code Fix
-                        Console.WriteLine("Enter " + dailyStatusModel.Activity + " Bug ID[Eg. 101010]");
-                        dailyStatusModel.TFSID = Console.ReadLine();
-                        Console.WriteLine("Enter Module [eg. Data Collectiion]");
-                        dailyStatusModel.Module = Console.ReadLine();
-                        Console.WriteLine("Enter Activity Details: [Eg. Sign and Submit Bug]");
-                        dailyStatusModel.ActivityDetails = Console.ReadLine();
-                        Console.WriteLine("Is it Complete? Press [Y/N] (Y: Complete; N: In-Progress)");
-                        if (Console.ReadLine().ToLower() == "y")
-                        {
-                            dailyStatusModel.Comments = "Completed";
-                        }
-                        else
-                        {
-                            dailyStatusModel.Comments = "In-Progress";
-                        }
-
-                        break;
-                    case 3: //Smoke Test Build Activity
-                        dailyStatusModel.Module = "WP";
-                        dailyStatusModel.Activity = "Build Activity";
-                        dailyStatusModel.ActivityDetails = "Smoke Test";
-                        dailyStatusModel.TFSID = "N/A";
-                        dailyStatusModel.Comments = "Completed";
-                        break;
-                    case 4: //Peer Test
-                        Console.WriteLine("Enter total Number of Bugs Tested[Eg. 2]");
-                        int totalPeerTestedBugs = Convert.ToInt32(Console.ReadLine());
-                        List<string> peerTestedBugIds = new List<string>();
-                        for (int i = 0; i < totalPeerTestedBugs; i++)
-                        {
-                            Console.WriteLine("Enter Peer Tested Bugid [{0}]", i + 1);
-                            peerTestedBugIds.Add(Console.ReadLine());
-                        }
-                        dailyStatusModel.TFSID = string.Join(",", peerTestedBugIds);
-                        dailyStatusModel.Module = "WP";
-                        dailyStatusModel.Activity = "Peer Test";
-                        dailyStatusModel.ActivityDetails = "Peer Tested Bugs";
-                        dailyStatusModel.Comments = "Completed";
-                        break;
-                    case 5: //Ad-Hoc Task
-                        Console.WriteLine("Enter Ad-Hoc Work Activity Details: [Eg. Table Column Description Analysis]");
-                        dailyStatusModel.ActivityDetails = Console.ReadLine();
-                        dailyStatusModel.Module = "WP";
-                        dailyStatusModel.TFSID = "N/A";
-                        dailyStatusModel.Comments = "Completed";
-                        break;
-
-                }
-
-                dailyStatusModelList.Add(dailyStatusModel);
-            }
-            else
-            {
-                break;
-            }
-        }
-        return dailyStatusModelList;
-    }
+   
     static List<DailyStatusModel> GetDailyStatusModelListFromInputFile()
     {
         inputValidationsList = new List<string>();
@@ -187,13 +81,6 @@ class Program
         var fileUpdatedDateTime = File.GetLastWriteTime(inputFilePath);
         string displayDateTime = fileUpdatedDateTime.ToShortTimeString() + " " + fileUpdatedDateTime.DayOfWeek + " " + fileUpdatedDateTime.ToShortDateString();
         Console.WriteLine("InputFile File Was Last Updated On {0}", displayDateTime);
-        Console.WriteLine("Press [Y] to Continue, any other key to open the containing Folder");
-        if (Console.ReadLine().ToLower() != "y")
-        {
-            System.Diagnostics.Process.Start(Environment.CurrentDirectory + @"\InputOutput_DailyStatus");
-            Environment.Exit(0);
-
-        }
         dailyStatusModelList = new List<DailyStatusModel>();
         //DateTime lastModified = System.IO.File.GetLastWriteTime(strFilePath);
         var loopCounterForId = 1;
@@ -223,11 +110,11 @@ class Program
                 dailyStatusModel.Date = StatusDate.ToString();
                 if (line.Contains("Triage Bug ID"))
                 {
-                    dailyStatusModel.Activity = constantModelList.FirstOrDefault(x => x.Id == 1).value1;
+                    dailyStatusModel.Activity = Constants.ActivityTriage;
                 }
                 else
                 {
-                    dailyStatusModel.Activity = constantModelList.FirstOrDefault(x => x.Id == 2).value1;
+                    dailyStatusModel.Activity = Constants.ActivityCodeFix;
                 }
                 dailyStatusModel.TFSID = line.Substring(line.IndexOf(':') + 1).Trim();
                 if (dailyStatusModel.TFSID == "<BugId>")
@@ -274,7 +161,7 @@ class Program
                 dailyStatusModel = new DailyStatusModel();
                 dailyStatusModel.Module = "WP";
                 dailyStatusModel.Date = StatusDate.ToString();
-                dailyStatusModel.Activity = constantModelList.FirstOrDefault(x => x.Id == 3).value1;
+                dailyStatusModel.Activity = Constants.ActivityBuildActivity;
                 dailyStatusModel.Id = loopCounterForId;
                 loopCounterForId++;
                 dailyStatusModel.ActivityDetails = "Smoke Test";
@@ -288,7 +175,7 @@ class Program
                 dailyStatusModel.TFSID = dailyStatusModel.TFSID = line.Substring(line.IndexOf(':') + 1).Trim();
                 dailyStatusModel.Module = "WP";
                 dailyStatusModel.Date = StatusDate.ToString();
-                dailyStatusModel.Activity = constantModelList.FirstOrDefault(x => x.Id == 4).value1;
+                dailyStatusModel.Activity = Constants.ActivityPeerTest;
                 dailyStatusModel.Id = loopCounterForId;
                 loopCounterForId++;
                 dailyStatusModel.ActivityDetails = "Peer Tested Bugs";
@@ -300,12 +187,44 @@ class Program
                 dailyStatusModel = new DailyStatusModel();
                 dailyStatusModel.Module = "WP";
                 dailyStatusModel.Date = StatusDate.ToString();
-                dailyStatusModel.Activity = constantModelList.FirstOrDefault(x => x.Id == 5).value1;
+                dailyStatusModel.Activity = Constants.ActivityAdHoc;
                 dailyStatusModel.Id = loopCounterForId;
                 loopCounterForId++;
                 dailyStatusModel.TFSID = "N/A";
                 dailyStatusModel.ActivityDetails = line.Substring(line.IndexOf(':') + 1).Trim();
                 dailyStatusModel.Comments = "Completed";
+                dailyStatusModelList.Add(dailyStatusModel);
+            }
+            else if (line.Contains("Worked On CR"))
+            {
+                dailyStatusModel = new DailyStatusModel();
+                dailyStatusModel.Module = "WP";
+                dailyStatusModel.Date = StatusDate.ToString();
+                dailyStatusModel.Activity = Constants.ActivityCR;
+                dailyStatusModel.Id = loopCounterForId;
+                loopCounterForId++;
+                dailyStatusModel.TFSID = "N/A";
+                dailyStatusModel.ActivityDetails = line.Substring(line.IndexOf(':') + 1).Trim();
+                if (dailyStatusModel.ActivityDetails == "<CR Title>")
+                {
+                    inputValidationsList.Add("Invalid: " + line);
+                }
+                var indexOfLine = inputFileLines.IndexOf(line);
+                var lineCompleted = inputFileLines[indexOfLine + 1];
+                var Completed = lineCompleted.Substring(lineCompleted.IndexOf(':') + 1).Trim();
+                if (Completed == "<Y/N>")
+                {
+                    inputValidationsList.Add("Invalid: " + lineCompleted);
+                }
+
+                if (Completed.ToLower() == "y")
+                {
+                    dailyStatusModel.Comments = "Completed";
+                }
+                else if (Completed.ToLower() == "n")
+                {
+                    dailyStatusModel.Comments = "In-Progress";
+                }
                 dailyStatusModelList.Add(dailyStatusModel);
             }
         }
@@ -325,6 +244,9 @@ class Program
     }
     static void ExcelOperations()
     {
+        int spinnerInterval = 200;
+        var spinner = new Spinner(spinnerInterval);
+        spinner.Start();
         Excel.Application excelApp = new Excel.Application();
         Excel.Workbook excelBook = excelApp.Workbooks.Open(Environment.CurrentDirectory + @"\InputOutput_DailyStatus\" + InputExcelFileName);
         Excel.Workbook excelBook2 = excelApp.Workbooks.Add(Type.Missing);
@@ -384,7 +306,7 @@ class Program
                 GeneratedExcelFileNamePath = ExcelFilePathProdForSave + newFileName;
                 excelBook2.SaveAs2(GeneratedExcelFileNamePath);
             }
-
+            Console.WriteLine();
             Console.WriteLine("Excel File Created");
         }
         catch (Exception ex)
@@ -398,6 +320,7 @@ class Program
             //excelBook2.Save();
             //excelBook2.Close();
             excelApp.Quit();
+            spinner.Stop();
         }
 
     }
@@ -450,7 +373,7 @@ class Program
             }//end of catch
         }
     }
-   
+
 }
 class DailyStatusModel
 {
@@ -471,9 +394,65 @@ class DailyStatusModel
     public string Comments { get; set; }
 }
 
-class ConstantsModel
+
+class Constants
 {
-    public int Id { get; set; }
-    public string value1 { get; set; }
-    public string value2 { get; set; }
+    public const string ActivityTriage = "Triage";
+    public const string ActivityCodeFix = "Code Fix";
+    public const string ActivityBuildActivity = "Build Activity";
+    public const string ActivityPeerTest = "Peer Test";
+    public const string ActivityAdHoc = "Ad-Hoc";
+    public const string ActivityCR = "CR";
+}
+public class Spinner : IDisposable
+{
+    private const string Sequence = @"/-\|";
+    private int counter = 0;
+    private readonly int delay;
+    private bool active;
+    private readonly Thread thread;
+
+    public Spinner(int delay)
+    {
+        this.delay = delay;
+        thread = new Thread(Spin);
+    }
+
+    public void Start()
+    {
+        Console.Write("Wait ");
+        active = true;
+        if (!thread.IsAlive)
+            thread.Start();
+    }
+
+    public void Stop()
+    {
+        active = false;
+        Console.WriteLine();
+    }
+
+    private void Spin()
+    {
+        while (active)
+        {
+            Turn();
+            Thread.Sleep(delay);
+        }
+    }
+
+    private void Draw(char c)
+    {
+        Console.Write("|");
+    }
+
+    private void Turn()
+    {
+        Draw(Sequence[++counter % Sequence.Length]);
+    }
+
+    public void Dispose()
+    {
+        Stop();
+    }
 }
