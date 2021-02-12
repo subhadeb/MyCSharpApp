@@ -461,7 +461,7 @@ class Program
             Console.WriteLine("Do you want to Create Text File For Daily Status Input, Press Y to Create any other key to exit");
             if (Console.ReadLine().ToLower() == "y")
             {
-                string fileNameTimeStamp = DateTime.Now.ToString("yyyyMMdd_dddd_HHmm");
+                string fileNameTimeStamp = DateTime.Now.ToString("yyyyMMdd_dddd_HHmmss");
                 string fileName = "TriageEmail_" + " " + fileNameTimeStamp + ".txt";
                 string filePath = RepositoryProjectsPath + DailyStatusInputFolderRelativePath + fileName;
                 StringBuilder stringBuilder = new StringBuilder();

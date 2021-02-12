@@ -12,9 +12,19 @@ namespace MyCSharpApp
     {
         public PracticeCodes()
         {
-            testSpinner();
+            timestamp();
         }
 
+
+        static void timestamp() 
+        {
+            string fileNameTimeStamp = DateTime.Now.ToString("yyyyMMdd_dddd_HHmmss");
+            Console.WriteLine(fileNameTimeStamp);
+        }
+        static void nullCheck(string str, int a)
+        {
+            Console.WriteLine(a);
+        }
         public void testSpinner()
         {
             var spinner = new Spinner(1, 1);

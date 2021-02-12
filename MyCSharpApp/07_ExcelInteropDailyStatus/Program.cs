@@ -21,14 +21,13 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 
 
 */
-//Next Changes: Change Constant Model to the One Like Constants class.
+//Next Changes: 
 
 
 class Program
 {
     //Configurable Paths and FileName Constants.
-    public const string ExcelFilePath = @"C:\Users\subdeb\Documents\Subha_Deb_497290\Study\Dot_Net_Study\2 OOPS and C Sharp\CSharp Apps Programs  Backup\7_ExcelInteropDailyStatus\InputFiles\";
-    public const string ExcelFilePathProdForSave = @"C:\Users\subdeb\Documents\ProjectWP\Other Tasks\00_Daily_Status\aa_ProgrammedExcelFile\";
+    public const string ExcelFilePathProdForSave = @"C:\Users\subdeb\Documents\ProjectWP\Other Tasks\00_Daily_Status\aa_ProgrammedExcelFile\2021\";
     public const string InputExcelFileName = "InputFile_Sample.xlsx";
     public const string InputTextFilePath = @"\InputOutput_DailyStatus\InputFile.txt";
     public static List<string> ReceipentsEmailIdsList = new List<string>() { "abhishekkumar4@DELOITTE.com", "raparanjpe@deloitte.com", "ylimbachia@deloitte.com" };
@@ -58,7 +57,7 @@ class Program
         {
             Console.WriteLine("Enter Month/Date [eg. 12/31]");
             string inputStatusDate = Console.ReadLine();
-            inputStatusDate = inputStatusDate + "/2020";
+            inputStatusDate = inputStatusDate + "/" + DateTime.Now.Year;
             StatusDate = new DateTime();
             DateTime.TryParse(inputStatusDate, out StatusDate);
             if (StatusDate == DateTime.MinValue)
@@ -192,7 +191,21 @@ class Program
                 loopCounterForId++;
                 dailyStatusModel.TFSID = "N/A";
                 dailyStatusModel.ActivityDetails = line.Substring(line.IndexOf(':') + 1).Trim();
-                dailyStatusModel.Comments = "Completed";
+                var indexOfLine = inputFileLines.IndexOf(line);
+                var lineCompleted = inputFileLines[indexOfLine + 1];
+                var Completed = lineCompleted.Substring(lineCompleted.IndexOf(':') + 1).Trim();
+                if (Completed == "<Y/N>")
+                {
+                    inputValidationsList.Add("Invalid: " + lineCompleted);
+                }
+                if (Completed.ToLower() == "y")
+                {
+                    dailyStatusModel.Comments = "Completed";
+                }
+                else if (Completed.ToLower() == "n")
+                {
+                    dailyStatusModel.Comments = "In-Progress";
+                }
                 dailyStatusModelList.Add(dailyStatusModel);
             }
             else if (line.Contains("Worked On CR"))
