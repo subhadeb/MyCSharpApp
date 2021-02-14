@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.1022
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30621.155
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyCSharpApp", "MyCSharpApp\MyCSharpApp.csproj", "{6224C324-7527-4233-8A8C-37A7CAFA9C3C}"
 EndProject
@@ -34,6 +34,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "15_OpenFilesFoldersAutomated", "15_OpenFilesFoldersAutomated\15_OpenFilesFoldersAutomated.csproj", "{4C144CF7-9970-4654-B626-3088C967FBEE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "16_CreateSQLScripts", "16_CreateSQLScripts\16_CreateSQLScripts.csproj", "{EAE77F0B-0E20-49AA-9B1F-2911E64D3311}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "17_CreateDailyStatusInput", "17_CreateDailyStatusInput\17_CreateDailyStatusInput.csproj", "{35D9E3A6-113A-4671-AD76-AA93D19E37BF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -105,6 +107,10 @@ Global
 		{EAE77F0B-0E20-49AA-9B1F-2911E64D3311}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EAE77F0B-0E20-49AA-9B1F-2911E64D3311}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EAE77F0B-0E20-49AA-9B1F-2911E64D3311}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35D9E3A6-113A-4671-AD76-AA93D19E37BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35D9E3A6-113A-4671-AD76-AA93D19E37BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35D9E3A6-113A-4671-AD76-AA93D19E37BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35D9E3A6-113A-4671-AD76-AA93D19E37BF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
