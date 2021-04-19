@@ -30,7 +30,7 @@ class Program
     public const string ExcelFilePathProdForSave = @"C:\Users\subdeb\Documents\ProjectWP\Other Tasks\00_Daily_Status\aa_ProgrammedExcelFile\2021\";
     public const string InputExcelFileName = "InputFile_Sample.xlsx";
     public const string InputTextFilePath = @"\InputOutput_DailyStatus\InputFile.txt";
-    public static List<string> ReceipentsEmailIdsList = new List<string>() { "abhishekkumar4@DELOITTE.com", "raparanjpe@deloitte.com", "ylimbachia@deloitte.com" };
+    public static List<string> ReceipentsEmailIdsList = new List<string>() { "abhishekkumar4@DELOITTE.com", "raparanjpe@deloitte.com"};
     public const bool IsDev = false;//Set if to False for Prod
 
     //Application Level Variables

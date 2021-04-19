@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 /*
 
     ReadResourceFile(): Reads the Resource FIle and populated the Project path which is later appended with InputFileRelativePath/OutputFileRelativePath
-    ReadFromInputFile(): Reads the Contents form Input file store in the location InputFileRelativePath and push all the lines to ListStrLineElements
+    ReadFromInputFile(): Reads the Contents form Input file store in the location InputFileRelativePath and push all the lines to ListStrLineElements. It ignores RowVersionStamp(while adding)
     ProocessAndWriteToOutputFile(): Processes the Lines of ListStrLineElements and writes the contents to OutputFileRelativePath
     
 
@@ -67,7 +67,10 @@ class Program
             string line;
             while ((line = streamReader.ReadLine()) != null)
             {
-                ListStrLineElements.Add(line);
+                if (line != "RowVersionStamp") 
+                {
+                    ListStrLineElements.Add(line);
+                }
             }
             streamReader.Close();
         }
@@ -83,6 +86,7 @@ class Program
         Console.WriteLine("2. Tabbed to Comma Separated(Input Text file should have all the elements Separated by Tabs- Same as Excel Columns)");
         Console.WriteLine("3. Comma Separated to New Line(Input Text file should have all the elements Separated by Comma)");
         Console.WriteLine("4. New Line to New Line With Comma Separated(Input Text file should have all the elements Line by Line)");
+        Console.WriteLine("5. Same as #4(New Line to New Line With Comma Separated) + Tab before Comma in each line");
         string userInput = Console.ReadLine();
         StringBuilder sbText = new StringBuilder();
         string processedString = string.Empty;
@@ -112,12 +116,24 @@ class Program
                     }
                 }
                 break;
+            case "5":
+                for (int i = 0; i < ListStrLineElements.Count; i++)
+                {
+                    if (i == 0)
+                    {
+                        processedString = "\t" + ListStrLineElements[i] + '\n';
+                    }
+                    else
+                    {
+                        processedString =  processedString + "\t"  + ',' +  ListStrLineElements[i] + '\n';
+                    }
+                }
+                break;
         }
         sbText.Append(processedString);
         Console.WriteLine(sbText);
         string strOutput = sbText.ToString();
         File.WriteAllText(RepositoryProjectsPath + OutputFileRelativePath, strOutput);
         Console.WriteLine("Output File Updated");
-        Console.ReadKey();
     }
 }
