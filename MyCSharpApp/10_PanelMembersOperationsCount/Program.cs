@@ -14,13 +14,11 @@ using System.Threading.Tasks;
     ReadFromInputFile(): Reads the Contents from two Input files stored in the location InputFileRelativePath and push all the lines to PanelMembersLineInput1 and PanelMembersLineInput2
     FilterDuplicatesInBothLineInputs(): Finds Duplicate Emails of both the Inputs to create PanelMembersLineInput1Unique and PanelMembersLineInput2Unique and updates sbTextToWriteInOutput for the same.
     FindCommonAndDifferentPanelMembers(): Updates to the three important Lists: PanelMembersCommonInBoth,PanelMembersInput2NotInInput1 and PanelMembersInput1NotInInput2 and updates sbTextToWriteInOutput.
-
+    CompareDataOfCommonPanelMembers(): will compare the common data of InputFile1 and InputFile2 based on different parameters.
 
     Assume InputFile1 is the existing Sharepoint list, InputFile2 is the new one to be Added to the portal
-    InputFile1 Format: It should have: Id  [/t]  Email   [/t]   Level
-    InputFile2 Format: It should have: Id  [/t]  Email   [/t]   Level (If Id is not present keep it -1 or -something)
-
-
+    InputFile1 and InputFile2 format below directly copied from Excel (If Id is not present keep it -1 or -[something])
+    //FirstName	LastName	PhoneNumber	Address	Designation	Level	Location	EmailId	Capability	GenderCode	IsCertified	OfferingPortfolio   Id
 
 */
 
@@ -48,13 +46,17 @@ class Program
     {
         ReadResourceFile();
         ReadFromInputFile();
+        //DerriveFirstNameLastName();
         bool isWriteToFileFilterDuplicates = true;
         FilterDuplicatesInBothLineInputs(isWriteToFileFilterDuplicates);
         bool isWriteToFileFindCommonDifferent = true;
         FindCommonAndDifferentPanelMembers(isWriteToFileFindCommonDifferent);
+        CompareDataOfCommonPanelMembers();
         if (sbTextToWriteInOutput.Length > 0)
         {
             WriteToFile();
+            Console.WriteLine("Output File updated");
+            Console.ReadKey();
         }
     }
     static void ReadResourceFile()
@@ -83,7 +85,32 @@ class Program
             while ((line = streamReader.ReadLine()) != null)
             {
                 var splittedArray = line.Split('\t');
-                PanelMemberModel el = new PanelMemberModel() { Id = splittedArray[0], Email = splittedArray[1].ToLower(), Level = splittedArray[2] };
+                PanelMemberModel el;
+                if (splittedArray.Length > 5)
+                {
+                    el = new PanelMemberModel();
+                    el.FirstName = splittedArray[0];
+                    el.LastName = splittedArray[1];
+                    el.PhoneNumber = splittedArray[2];
+                    el.Address = splittedArray[3];
+                    el.Designation = splittedArray[4];
+                    el.Level = splittedArray[5];
+                    el.Location = splittedArray[6];
+                    el.EmailId = splittedArray[7];
+                    el.Capability = splittedArray[8];
+                    el.GenderCode = splittedArray[9];
+                    el.IsCertified = splittedArray[10];
+                    el.OfferingPortfolio = splittedArray[11];
+                    el.Id = splittedArray[12];
+                }
+                else if (splittedArray.Length >= 3) { //Only if Id, Email and Level were provided.
+                    el = new PanelMemberModel() { Id=splittedArray[0],EmailId = splittedArray[1],Level = splittedArray[2] };
+                }
+                else
+                {
+                    el = new PanelMemberModel() { EmailId = splittedArray[0] };
+                }
+
                 PanelMembersLineInput1.Add(el);
             }
             streamReader.Close();
@@ -95,25 +122,66 @@ class Program
             while ((line = streamReader.ReadLine()) != null)
             {
                 var splittedArray = line.Split('\t');
-                PanelMemberModel el = new PanelMemberModel() { Id = splittedArray[0], Email = splittedArray[1].ToLower(), Level = splittedArray[2] };
+                PanelMemberModel el;
+                if (splittedArray.Length > 5)
+                {
+                    el = new PanelMemberModel();
+                    el.FirstName = splittedArray[0];
+                    el.LastName = splittedArray[1];
+                    el.PhoneNumber = splittedArray[2];
+                    el.Address = splittedArray[3];
+                    el.Designation = splittedArray[4];
+                    el.Level = splittedArray[5];
+                    el.Location = splittedArray[6];
+                    el.EmailId = splittedArray[7];
+                    el.Capability = splittedArray[8];
+                    el.GenderCode = splittedArray[9];
+                    el.IsCertified = splittedArray[10];
+                    el.OfferingPortfolio = splittedArray[11];
+                    el.Id = splittedArray[12];
+                }
+                else if (splittedArray.Length >= 3)
+                { //Only if Id, Email and Level were provided.
+                    el = new PanelMemberModel() { Id = splittedArray[0], EmailId = splittedArray[1], Level = splittedArray[2] };
+                }
+                else
+                {
+                    el = new PanelMemberModel() { EmailId = splittedArray[0] };
+                }
                 PanelMembersLineInput2.Add(el);
             }
             streamReader.Close();
         }
     }
+    public static void DerriveFirstNameLastName()
+    {
+        foreach (var data in PanelMembersLineInput1)
+        {
+            var splitArrayFnLn = data.EmailId.Split(',');
+            if (splitArrayFnLn.Length > 2 || splitArrayFnLn.Length == 1)
+            {
+                sbTextToWriteInOutput.AppendLine("EXCEPTION for the Panel Member: " + data.EmailId);
+            }
+            else
+            {
+                sbTextToWriteInOutput.AppendLine(splitArrayFnLn[1].Trim() + "\t" + splitArrayFnLn[0].Trim());
+            }
+
+        }
+    }
 
     public static void FilterDuplicatesInBothLineInputs(bool isWriteToFile)
     {
-        var dupes1 = PanelMembersLineInput1.GroupBy(x => new { x.Email })
+        var dupes1 = PanelMembersLineInput1.GroupBy(x => new { x.EmailId })
                    .Where(x => x.Skip(1).Any()).ToList();
 
 
-        var dupes2 = PanelMembersLineInput2.GroupBy(x => new { x.Email })
+        var dupes2 = PanelMembersLineInput2.GroupBy(x => new { x.EmailId })
                    .Where(x => x.Skip(1).Any()).ToList();
 
         foreach (var data in PanelMembersLineInput1)
         {
-            if (!PanelMembersLineInput1Unique.Any(x => x.Email == data.Email))
+            if (!PanelMembersLineInput1Unique.Any(x => x.EmailId.ToLower() == data.EmailId.ToLower()))
             {
                 PanelMembersLineInput1Unique.Add(data);
             }
@@ -121,12 +189,12 @@ class Program
 
         foreach (var data in PanelMembersLineInput2)
         {
-            if (!PanelMembersLineInput2Unique.Any(x => x.Email == data.Email))
+            if (!PanelMembersLineInput2Unique.Any(x => x.EmailId.ToLower() == data.EmailId.ToLower()))
             {
                 PanelMembersLineInput2Unique.Add(data);
             }
         }
-       
+
 
         if (isWriteToFile)
         {
@@ -143,7 +211,7 @@ class Program
                 sbTextToWriteInOutput.AppendLine("Below are the Duplicate Emails in InputFile1");
                 foreach (var pMember in dupes1)
                 {
-                    sbTextToWriteInOutput.AppendLine(pMember.Key.Email);
+                    sbTextToWriteInOutput.AppendLine(pMember.Key.EmailId);
                 }
                 sbTextToWriteInOutput.AppendLine();
             }
@@ -153,7 +221,7 @@ class Program
                 sbTextToWriteInOutput.AppendLine("Below are the Duplicate Emails in InputFile2");
                 foreach (var pMember in dupes2)
                 {
-                    sbTextToWriteInOutput.AppendLine(pMember.Key.Email);
+                    sbTextToWriteInOutput.AppendLine(pMember.Key.EmailId);
                 }
                 sbTextToWriteInOutput.AppendLine();
             }
@@ -164,7 +232,7 @@ class Program
     {
         foreach (var data in PanelMembersLineInput1Unique)
         {
-            if (PanelMembersLineInput2Unique.Any(x => x.Email == data.Email))
+            if (PanelMembersLineInput2Unique.Any(x => x.EmailId.ToLower() == data.EmailId.ToLower()))
             {
                 PanelMembersCommonInBoth.Add(data);
             }
@@ -175,7 +243,7 @@ class Program
         }
         foreach (var data in PanelMembersLineInput2Unique)
         {
-            if (!PanelMembersLineInput1Unique.Any(x => x.Email == data.Email))
+            if (!PanelMembersLineInput1Unique.Any(x => x.EmailId.ToLower() == data.EmailId.ToLower()))
             {
                 PanelMembersInput2NotInInput1.Add(data);
             }
@@ -199,7 +267,7 @@ class Program
                 sbTextToWriteInOutput.AppendLine("PanelMembers Common In Both");
                 foreach (var data in PanelMembersCommonInBoth)
                 {
-                    sbTextToWriteInOutput.AppendLine(data.Id + '\t' + data.Email + '\t' + data.Level);
+                    sbTextToWriteInOutput.AppendLine(data.Id + '\t' + data.EmailId + '\t' + data.Level);
                 }
                 sbTextToWriteInOutput.AppendLine("------------------------------------------------------------------");
             }
@@ -210,7 +278,7 @@ class Program
                 sbTextToWriteInOutput.AppendLine("PanelMembers in Input1, not in Input2");
                 foreach (var data in PanelMembersInput1NotInInput2)
                 {
-                    sbTextToWriteInOutput.AppendLine(data.Id + '\t' + data.Email + '\t' + data.Level);
+                    sbTextToWriteInOutput.AppendLine(data.Id + '\t' + data.EmailId + '\t' + data.Level);
                 }
                 sbTextToWriteInOutput.AppendLine("------------------------------------------------------------------");
             }
@@ -221,14 +289,34 @@ class Program
                 sbTextToWriteInOutput.AppendLine("PanelMembers in Input2, not in Input1");
                 foreach (var data in PanelMembersInput2NotInInput1)
                 {
-                    sbTextToWriteInOutput.AppendLine(data.Id + '\t' + data.Email + '\t' + data.Level);
+                    ////FirstName	LastName	PhoneNumber	Address	Designation	Level	Location	EmailId	Capability	GenderCode	IsCertified	OfferingPortfolio   Id
+                    string outputStr = data.FirstName + '\t' + data.LastName + '\t' + data.PhoneNumber + '\t' + data.Address + '\t' + data.Designation + '\t' + data.Level + '\t' + data.Location;
+                    outputStr += '\t' + data.EmailId + '\t' + data.Capability + '\t' + data.GenderCode + '\t' + data.IsCertified + '\t' + data.OfferingPortfolio + '\t' + data.Id;
+                    sbTextToWriteInOutput.AppendLine(outputStr);
                 }
                 sbTextToWriteInOutput.AppendLine("------------------------------------------------------------------");
             }
 
+        }
+
+    }
+    static void CompareDataOfCommonPanelMembers()
+    {
+        if (PanelMembersCommonInBoth.Any())
+        {
+            sbTextToWriteInOutput.AppendLine();
+            sbTextToWriteInOutput.AppendLine("The Below Common PanelMembers have the Location/Level Mismatch");
+            foreach (var pmData in PanelMembersCommonInBoth)
+            {
+                var input1pmData = PanelMembersLineInput1Unique.FirstOrDefault(x => x.EmailId.ToLower() == pmData.EmailId.ToLower());
+                var input2pmData = PanelMembersLineInput2Unique.FirstOrDefault(x => x.EmailId.ToLower() == pmData.EmailId.ToLower());
+                if (input1pmData.Level != input2pmData.Level || input1pmData.Location != input2pmData.Location)
+                {
+                    sbTextToWriteInOutput.AppendLine(input1pmData.Id + '\t' + input2pmData.EmailId);
+                }
+            }
             sbTextToWriteInOutput.AppendLine("------------------------------------------------------------------");
         }
-        
     }
 
     public static void WriteToFile()
@@ -242,8 +330,23 @@ class Program
 
 class PanelMemberModel
 {
-    public string Id { get; set; }
+    //FirstName	LastName	PhoneNumber	Address	Designation	Level	Location	EmailId	Capability	GenderCode	IsCertified	OfferingPortfolio   Id
+
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string PhoneNumber { get; set; }
+    public string Address { get; set; }
+    public string Designation { get; set; }
     public string Level { get; set; }
-    public string Email { get; set; }
+
+    public string Location { get; set; }
+    public string EmailId { get; set; }
+    public string Capability { get; set; }
+
+    public string GenderCode { get; set; }
+    public string IsCertified { get; set; }
+    public string OfferingPortfolio { get; set; }
+    public string Id { get; set; }
+
 
 }

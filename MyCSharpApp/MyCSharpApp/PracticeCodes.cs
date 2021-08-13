@@ -12,21 +12,85 @@ namespace MyCSharpApp
 {
     public class PracticeCodes
     {
+        static List<string> ListStrLineElements = new List<string>();//Populated from the method ReadFromInputFile
+        static List<string> ListStrLineElements2 = new List<string>();//Populated from the method ReadFromInputFile
+        static StringBuilder sbTextToWriteInOutput = new StringBuilder(); //Written to o/p from the method
         public PracticeCodes()
         {
-            CheckConvertTryParse();
             //TO PRACTICE CODE DONT FORGET TO SET THIS PROJECT AS THE STARTUP PROJECT
+            ReadFromInputFile();
             Console.ReadKey();
         }
 
+        static void ReadFromInputFile()
+        {
+            var exePath = Assembly.GetExecutingAssembly().Location;
+            int lastIndexOfDebug = exePath.LastIndexOf("Debug");
+            string filePath = exePath.Substring(0, lastIndexOfDebug) + @"Debug\Files_PracticeCode\InputFile.txt";
+            var fileStream = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+            using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+            {
+                string line;
+                while ((line = streamReader.ReadLine()) != null)
+                {
+                    ListStrLineElements.Add(line);
+                }
+                streamReader.Close();
+            }
+            string filePath2 = exePath.Substring(0, lastIndexOfDebug) + @"Debug\Files_PracticeCode\InputFile2.txt";
+            var fileStream2 = new FileStream(filePath2, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+            using (var streamReader2 = new StreamReader(fileStream2, Encoding.UTF8))
+            {
+                string line;
+                while ((line = streamReader2.ReadLine()) != null)
+                {
+                    ListStrLineElements2.Add(line);
+                }
+                streamReader2.Close();
+            }
+            performOperationsOnInput();
+        }
+        static void performOperationsOnInput()
+        {
+            ListStrLineElements = ListStrLineElements.Distinct().ToList();
+            ListStrLineElements2 = ListStrLineElements2.Distinct().ToList();
 
+
+            var commonRoles = new List<string>();
+
+            sbTextToWriteInOutput.AppendLine("Common Roles of both the list");
+            foreach (var line in ListStrLineElements)
+            {
+                if (ListStrLineElements2.Any(x => x.ToLower() == line.ToLower()))
+                {
+                    commonRoles.Add(line);
+                    sbTextToWriteInOutput.AppendLine(line);
+                }
+
+            }
+            WriteToOutputFile();
+        }
+
+
+        static void WriteToOutputFile()
+        {
+            if (sbTextToWriteInOutput.Length > 0)
+            {
+                string strOutput = sbTextToWriteInOutput.ToString();
+                var exePath = Assembly.GetExecutingAssembly().Location;
+                int lastIndexOfDebug = exePath.LastIndexOf("Debug");
+                string filePath = exePath.Substring(0, lastIndexOfDebug) + @"Debug\Files_PracticeCode\OutputFile.txt";
+                File.WriteAllText(filePath, strOutput);
+                Console.WriteLine("Output File Updated");
+            }
+        }
         static void CheckConvertTryParse()
         {
             string strnum = "abc";
             int num = Convert.ToInt32(strnum);
-            Console.WriteLine( num);
+            Console.WriteLine(num);
 
-            
+
 
         }
         static void DateRangeValidationTest()
@@ -78,7 +142,7 @@ namespace MyCSharpApp
 
             var strList = intlist.Select(x => x.ToString()).ToList();
 
-            var intlist2 = strList.Select(x=> int.Parse(x)).Distinct().ToList();
+            var intlist2 = strList.Select(x => int.Parse(x)).Distinct().ToList();
 
 
         }
@@ -111,11 +175,11 @@ namespace MyCSharpApp
 
             Console.WriteLine(data.Count());
         }
-        static void timestamp() 
+        static void timestamp()
         {
             string fileNameTimeStamp = DateTime.Now.ToString("yyyyMMdd_dddd_HHmmss");
             Console.WriteLine(fileNameTimeStamp);
-            
+
         }
         static void nullCheck(string str, int a)
         {
@@ -200,7 +264,7 @@ namespace MyCSharpApp
             file.Write(buffer, 0, buffer.Length);
         }
 
-      
+
 
 
     }
@@ -274,7 +338,29 @@ namespace MyCSharpApp
         {
             Stop();
         }
+
+        static class MyStaticClass
+        {
+            static MyStaticClass() { }//A. Will it work or compile error
+            //MyStaticClass() { }//B. Will it work or compile error
+        }
+        abstract class MyAbstractClass
+        {
+        }
+        sealed class MySealedClass : myClass
+        {
+
+        }
+        class myClass
+        {
+
+
+        }
+
+
     }
+
+
 
 }
 
