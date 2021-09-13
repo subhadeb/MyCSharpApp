@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 
 /*
 
-    1. Change Class to Program
+    1. Change Class from Program2 to Program
     2. Change from Main2 to Main
-    3. Debug folder should have the folder InputOutput_SQLScripts and InputFile.txt and OutputFile.sql under it.
+    3. Debug folder under bin should have the folder InputOutput_SQLScripts and InputFile.txt and OutputFile.sql under it.
 
 
 */
@@ -22,8 +22,7 @@ using System.Threading.Tasks;
 
 class Program2
 {
-    //Configurable Paths and FileName Constants.
-    public static string RepositoryProjectsPath = string.Empty;
+    public static string InputOutputPath = string.Empty;
    
     //Application Level Variables
     static List<string> ListStrLineElements = new List<string>();
@@ -48,8 +47,8 @@ class Program2
     {
         var executingAssemblyPath = Assembly.GetExecutingAssembly().Location;
         int lastIndexOfDebug = executingAssemblyPath.LastIndexOf("Debug");
-        RepositoryProjectsPath = executingAssemblyPath.Substring(0, lastIndexOfDebug) + @"Debug\InputOutput_SQLScripts\InputFile.txt";
-        var fileStream = new FileStream(RepositoryProjectsPath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+        InputOutputPath = executingAssemblyPath.Substring(0, lastIndexOfDebug) + @"Debug\InputOutput_SQLScripts\InputFile.txt";
+        var fileStream = new FileStream(InputOutputPath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
         using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
         {
             string line;
@@ -131,7 +130,7 @@ class Program2
                 var dataListWithQute = new List<string>();
                 foreach (var data in dataArray)
                 {
-                    var dataAfterRemovingSpecialChars = Regex.Replace(data, @"[^0-9a-zA-Z ,./:()-]+", "");
+                    var dataAfterRemovingSpecialChars = Regex.Replace(data, @"[^0-9a-zA-Z ,./:()-_@&]+", "");
                     if (dataAfterRemovingSpecialChars != "NULL")
                     {
                         dataListWithQute.Add("'" + dataAfterRemovingSpecialChars + "'");
@@ -157,8 +156,8 @@ class Program2
         {
             var executingAssemblyPath = Assembly.GetExecutingAssembly().Location;
             int lastIndexOfDebug = executingAssemblyPath.LastIndexOf("Debug");
-            RepositoryProjectsPath = executingAssemblyPath.Substring(0, lastIndexOfDebug) + @"Debug\InputOutput_SQLScripts\OutputFile.sql";
-            File.WriteAllText(RepositoryProjectsPath, SBQueryToWrite.ToString());
+            InputOutputPath = executingAssemblyPath.Substring(0, lastIndexOfDebug) + @"Debug\InputOutput_SQLScripts\OutputFile.sql";
+            File.WriteAllText(InputOutputPath, SBQueryToWrite.ToString());
             Console.WriteLine("Output File Updated");
         }
     }

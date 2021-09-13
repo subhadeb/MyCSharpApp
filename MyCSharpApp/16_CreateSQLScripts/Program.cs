@@ -139,9 +139,11 @@ class Program
         }
 
 
+        var insertStatementLine1 = "INSERT INTO " + TableName + "\n(";
+        var insertStatementLine2 = string.Join(",", columnNamesArray) + "\n) VALUES";
 
-        SBQueryToWrite.AppendLine("INSERT INTO " + TableName + "\n(");
-        SBQueryToWrite.AppendLine(string.Join(",", columnNamesArray) + "\n) VALUES");
+        SBQueryToWrite.AppendLine(insertStatementLine1);
+        SBQueryToWrite.AppendLine(insertStatementLine2);
         //Assiming Each Input Line was in the format(Tab or \t after 3): 3 Join our Online Learning Community
         if (ListStrLineElements != null && ListStrLineElements.Any())
         {
@@ -151,7 +153,7 @@ class Program
                 var dataListWithQute = new List<string>();
                 foreach (var data in dataArray)
                 {
-                    var dataAfterRemovingSpecialChars = Regex.Replace(data, @"[^0-9a-zA-Z ,./:()-]+", "");
+                    var dataAfterRemovingSpecialChars = Regex.Replace(data, @"[^0-9a-zA-Z ,./:()-_@&]+", "");
                     if (dataAfterRemovingSpecialChars != "NULL")
                     {
                         dataListWithQute.Add("'" + dataAfterRemovingSpecialChars + "'");
@@ -163,6 +165,17 @@ class Program
                     }
                 }
                 SBQueryToWrite.AppendLine("(" + string.Join(",", dataListWithQute) + "),");
+                if (ListStrLineElements.IndexOf(lineItem) > 0 && ListStrLineElements.IndexOf(lineItem) % 900 == 0) {
+                    //Insert only allows upto 1000 Elements at a time
+                    if (SBQueryToWrite[SBQueryToWrite.Length - 3] == ',')
+                    {
+                        SBQueryToWrite.Remove(SBQueryToWrite.Length - 3, 1);
+                    }
+                    SBQueryToWrite.AppendLine();
+                    SBQueryToWrite.AppendLine();
+                    SBQueryToWrite.AppendLine(insertStatementLine1);
+                    SBQueryToWrite.AppendLine(insertStatementLine2);
+                }
             }
             if (SBQueryToWrite[SBQueryToWrite.Length - 3] == ',')
             {
