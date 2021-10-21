@@ -18,8 +18,19 @@ namespace MyCSharpApp
         public PracticeCodes()
         {
             //TO PRACTICE CODE DONT FORGET TO SET THIS PROJECT AS THE STARTUP PROJECT
-            ReadFromInputFile();
+            DatesCheck();
             Console.ReadKey();
+        }
+
+        static void DatesCheck()
+        {
+            var TTDate = Convert.ToDateTime("10/20/2021");//Convert.ToDateTime("01/04/2022");
+
+            var DispositionDate = Convert.ToDateTime("2023-09-18");
+            if (DispositionDate != null && ((DateTime)DispositionDate).AddDays(31) > TTDate)
+            {
+                Console.WriteLine("Add Program");
+            }
         }
 
         static void ReadFromInputFile()
@@ -49,6 +60,18 @@ namespace MyCSharpApp
                 streamReader2.Close();
             }
             performOperationsOnInput();
+        }
+        static void UpdateListElement()
+        {
+            var SelectedProgramsList = new List<string>();
+            SelectedProgramsList.Add("SN");
+            SelectedProgramsList.Add("MG");
+            if (SelectedProgramsList.Contains("MG"))
+            {
+                SelectedProgramsList[SelectedProgramsList.IndexOf("MG")] = "MA";
+            }
+            Console.WriteLine(string.Join(",", SelectedProgramsList));
+
         }
         static void performOperationsOnInput()
         {

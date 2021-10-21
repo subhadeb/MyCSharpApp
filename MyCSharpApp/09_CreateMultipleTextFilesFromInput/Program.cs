@@ -69,7 +69,11 @@ class Program
 
     static void processOutput()
     {
-        Console.WriteLine("Press 1 to Create Multiple Text Files, Press 2 to create Multiple Folders any other key to exit");
+        Console.WriteLine("Press:- ");
+        Console.WriteLine("1 to Create Multiple Text Files");
+        Console.WriteLine("2 to create Multiple Folders");
+        Console.WriteLine("3 To See Input Format");
+        Console.WriteLine("Any other key to exit");
         string input = Console.ReadLine();
         if (input == "1")
         {
@@ -78,6 +82,10 @@ class Program
         else if (input == "2")
         {
             ProcessAndCreateFolders();
+        }
+        else if (input == "3")
+        {
+            DisplayInputFormat();
         }
         else
         {
@@ -124,5 +132,23 @@ class Program
             Directory.CreateDirectory(RepositoryProjectsPath + DirectoryFileCreationRelativePath + lineAfterRemovingSpecialChars);
         }
             
+    }
+
+    static void DisplayInputFormat()
+    {
+        Console.WriteLine("The Input should contain a Tab");
+        Console.WriteLine("The First Part before tab can contain Charecters as well as numbers");
+        Console.WriteLine("The First Part may contain Special Chars(Eg stop(.)) as well");
+        Console.WriteLine();
+        Console.WriteLine("Example 1 Below:");
+        Console.WriteLine("UDM23	Welocme to This Course");
+        Console.WriteLine("UDM24	What is Microsoft");
+
+        Console.WriteLine();
+        Console.WriteLine("Example 2 Below:");
+        Console.WriteLine("1	Welocme to This Course");
+        Console.WriteLine("2	What is Microsoft");
+
+
     }
 }
