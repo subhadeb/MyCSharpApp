@@ -1,0 +1,7 @@
+﻿Table Name: MyTable
+---------------------------------------------------------------
+DO NOT DELETE TILL THIS LINE
+---------------------------------------------------------------
+Col1	Col2
+Value1Col1	Value1Col2
+Value2Col1	Value2Col1

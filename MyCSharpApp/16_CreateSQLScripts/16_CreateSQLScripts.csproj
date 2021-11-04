@@ -51,5 +51,10 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="InputOutput_SQLScripts\InputFile.txt" />
+    <Content Include="InputOutput_SQLScripts\OutputFile.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

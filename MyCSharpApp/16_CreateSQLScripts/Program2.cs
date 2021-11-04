@@ -12,10 +12,19 @@ using System.Threading.Tasks;
 
 /*
 
-    1. Change Class from Program2 to Program
+    1. In a new Console Application, Change Class from Program2 to Program
     2. Change from Main2 to Main
-    3. Debug folder under bin should have the folder InputOutput_SQLScripts and InputFile.txt and OutputFile.sql under it.
+    3. Debug folder under bin should have the folder InputOutput_SQLScripts(See the Folder beside this Program2.cs) 
+    4. InputOutput_SQLScripts should have InputFile.txt(In the same format) and OutputFile.sql(Can be blank) under it
+    Sample Format/Content of InputFile.txt for the program to work below
 
+Table Name: MyTable
+---------------------------------------------------------------
+DO NOT DELETE TILL THIS LINE
+---------------------------------------------------------------
+Col1	Col2
+Value1Col1	Value1Col2
+Value2Col1	Value2Col1
 
 */
 
