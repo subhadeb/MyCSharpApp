@@ -30,13 +30,13 @@ using System.Threading.Tasks;
 */
 
 
-class Program
+public class Program2
 {
     //FOR DEV, IN THE METHOD WriteToOutputFile set writeToFile = false, for Prod it is true
     public static string RepositoryProjectsPath = string.Empty;
-    public const string InputFilePath = @"C:\Users\subdeb\Documents\ProjectWP\DefectsList\00Input_Copy.txt";
-    public const string OutputFilePath = @"C:\Users\subdeb\Documents\ProjectWP\DefectsList\00DefectListSIT.txt";
-    public const string OutputDirectoryPath = @"C:\Users\subdeb\Documents\ProjectWP\DefectsList\";
+    public static string InputFilePath = @"00Input_Copy.txt";
+    public static string OutputFilePath = @"00DefectList.txt";
+    public static string OutputDirectoryPath = @"";
 
 
     //Static Common Variables
@@ -45,58 +45,49 @@ class Program
     static List<string> ExistingBugIdList;
     static List<string> InsertedSerialCount;
 
-    //For Sharing EXE. Program2 would be called. Set executeProgram2ForEXE as true
-    static bool executeProgram2ForEXE = true;
-
-    static void Main(string[] args)
+    public static void Main2(string[] args)
     {
-        if (executeProgram2ForEXE)
+        var currentExeDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        InputFilePath = currentExeDirectory + @"\" + InputFilePath;
+        OutputFilePath = currentExeDirectory + @"\" + OutputFilePath;
+        OutputDirectoryPath = currentExeDirectory + @"\";
+        ReadFromInputFile();
+        ReadDataFromOutputFile();
+        if (DefectList.Any() && LastSerialCount > 0)
         {
-            string[] arr = { };
-            Program2.Main2(arr);
-        }
-        else
-        {
-            ReadFromInputFile();
-            ReadDataFromOutputFile();
-            if (DefectList.Any())
+            InsertedSerialCount = new List<string>();
+            int tempBugIdAssignedEmail = 0;
+            int.TryParse(DefectList.FirstOrDefault().Substring(0, 6), out tempBugIdAssignedEmail);//For Email Bug Assignments/Triage, the first 6chars will be the Bug Id.
+
+            if (DefectList.FirstOrDefault().Contains("Work item Changed"))//If it is Autmated TFSIE Email, it will contain the mentioned text
             {
-                InsertedSerialCount = new List<string>();
-                int tempBugIdAssignedEmail = 0;
-                int.TryParse(DefectList.FirstOrDefault().Substring(0, 6), out tempBugIdAssignedEmail);//For Email Bug Assignments/Triage, the first 6chars will be the Bug Id.
-
-                if (DefectList.FirstOrDefault().Contains("Work item Changed"))//If it is Autmated TFSIE Email, it will contain the mentioned text
-                {
-                    FormatOutputFileForTFSIE_EMail();
-                }
-                else if (tempBugIdAssignedEmail > 100000 && (DefectList.FirstOrDefault().Substring(6, 4) != "\tBug"))
-                {
-                    FormatOutputFileForAssignedEMail();
-                }
-                else
-                {
-                    FormatOutputFileForTFS();
-                }
-
-                if (InsertedSerialCount.Count > 0)
-                {
-                    Console.WriteLine(InsertedSerialCount.Count + " Record(s) Inserted with Generated Serial Count: " + string.Join(", ", InsertedSerialCount));
-                }
-                else
-                {
-                    Console.WriteLine("No Records Inserted. The Records might already exist");
-                }
+                FormatOutputFileForTFSIE_EMail();
+            }
+            else if (tempBugIdAssignedEmail > 100000 && (DefectList.FirstOrDefault().Substring(6, 4) != "\tBug"))
+            {
+                FormatOutputFileForAssignedEMail();
             }
             else
             {
-                Console.WriteLine("No Records Inserted. Reverify the Input File");
+                FormatOutputFileForTFS();
             }
-            //var EXEFilePath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase);
-            //System.Diagnostics.Process.Start(EXEFilePath);
-            Console.ReadLine();
+
+            if (InsertedSerialCount.Count > 0)
+            {
+                Console.WriteLine(InsertedSerialCount.Count + " Record(s) Inserted with Generated Serial Count: " + string.Join(", ", InsertedSerialCount));
+            }
+            else
+            {
+                Console.WriteLine("No Records Inserted. The Records might already exist");
+            }
         }
-        
-        
+        else
+        {
+            Console.WriteLine("No Records Inserted. Reverify the Input/Output File");
+        }
+        //var EXEFilePath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase);
+        //System.Diagnostics.Process.Start(EXEFilePath);
+        Console.ReadLine();
     }
     static void ReadResourceFile()
     {
@@ -150,7 +141,20 @@ class Program
                     LastLine = currentLineItem;
                 }
             }
-            LastSerialCount = Convert.ToInt32(LastLine.Substring(0, 3));
+            if (!string.IsNullOrEmpty(LastLine) && LastLine.Split('_').Length > 1 && int.TryParse(LastLine.Split('_')[0],out LastSerialCount))
+            {
+                LastSerialCount = Convert.ToInt32(LastLine.Split('_')[0]);//The statement is of no use but still for the if to execute added it.
+            }
+            else
+            {
+                Console.WriteLine(OutputFilePath + " : This file does not have the expected data");
+                Console.WriteLine("It should have data in the below format and example");
+                Console.WriteLine("Format: ");
+                Console.WriteLine("{Counter}_{BugId}_Bug_{Bug Title}");
+                Console.WriteLine("Example: ");
+                Console.WriteLine("1_999999_Bug_Inital Bug for set up");
+            }
+            
             streamReader.Close();
         }
     }
@@ -190,15 +194,15 @@ class Program
         bool writeToFile = true;//Make it true for Writing to File/During Deployment and false while debugging
         if (writeToFile)
         {
-            InsertedSerialCount.Add(strLineItem.Substring(0, 3));
+            InsertedSerialCount.Add(strLineItem.Split('_')[0]);
             File.AppendAllText(OutputFilePath, Environment.NewLine);
             File.AppendAllText(OutputFilePath, strLineItem);
             Directory.CreateDirectory(OutputDirectoryPath + strLineItem);
         }
     }
-   
- 
-    
+
+
+
     static void FormatOutputFileForAssignedEMail()
     {
         foreach (var strLineItemFromInputFile in DefectList)
@@ -247,5 +251,5 @@ class Program
             }
         }
     }
-  
+
 }

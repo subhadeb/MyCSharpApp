@@ -10,16 +10,105 @@ using System.Threading.Tasks;
 
 namespace MyCSharpApp
 {
+
+    
     public class PracticeCodes
     {
-        static List<string> ListStrLineElements = new List<string>();//Populated from the method ReadFromInputFile
-        static List<string> ListStrLineElements2 = new List<string>();//Populated from the method ReadFromInputFile
-        static StringBuilder sbTextToWriteInOutput = new StringBuilder(); //Written to o/p from the method
+        static List<string> ListStrLineElements = new List<string>();//Populated from the file InputFile.txt, method-ReadFromInputFile
+        static List<string> ListStrLineElements2 = new List<string>();//Populated from the file InputFile2.txt, method-ReadFromInputFile
+        static StringBuilder sbTextToWriteInOutput = new StringBuilder(); //Written to o/p file - OutputFile.txt from method WriteToOutputFile
         public PracticeCodes()
         {
             //TO PRACTICE CODE DONT FORGET TO SET THIS PROJECT AS THE STARTUP PROJECT
-            DatesCheck();
+            EmployeeListOperation();
             Console.ReadKey();
+        }
+         static void EmployeeListOperation()
+        {
+            Console.WriteLine("The EXE is on this path: ");
+            Console.WriteLine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            List<Employee> employees = new List<Employee>();
+            employees.Add(new Employee() { FirstName = "John", Age = 29 });
+            employees.Add(new Employee() { FirstName = "Matts", Age = 25 });
+            employees.Add(new Employee() { FirstName = "Eliza", Age = 30 });
+            employees.Add(new Employee() { FirstName = "Plank", Age = 29 });
+
+            var FirstName = employees.OrderByDescending(x => x.Age).FirstOrDefault().FirstName.ToUpper();
+            //Find The First Name of the Highest Aged Employee in Capitalized format using LINQ(It should output ELIZA)
+
+            
+            Console.WriteLine(FirstName);
+            
+            //Find All employees between the age 24 and (Both Inclusive)
+        }
+
+        static void testRegex()
+        {
+            
+
+            Console.WriteLine("Enter Input CaseNumber");
+            var CaseNumber = Console.ReadLine();
+            if (CaseNumber == "break")
+            {
+                return;
+            }
+            Regex regex = new Regex(@"^\d+$");
+            if (!string.IsNullOrEmpty(CaseNumber))
+            {
+                if (!regex.IsMatch(CaseNumber.Trim()))
+                {
+                    Console.WriteLine("DocumentID  Error for Input CaseNumber: " + CaseNumber);
+                }
+                else
+                {
+                    Console.WriteLine("No Error/Input is Numberic for CaseNumber" + CaseNumber);
+                }
+            }
+            Console.WriteLine("---------------------------------------------------------------");
+            testRegex();
+        }
+        static void TestContainsSplit()
+        {
+            string data = null;
+            var containsdata = data.Split(',').Contains("ABC");
+            Console.WriteLine(containsdata);
+        }
+        static void OrderByTest()
+        {
+            List<ModelData> myList = new List<ModelData>();
+            myList.Add(new ModelData() {str = "ABCD",intNum=123,boolVar = false });
+            myList.Add(new ModelData() { str = "DEF", intNum = 456, boolVar = true });
+            myList.Add(new ModelData() { str = "GHI", intNum = 789, boolVar = false });
+            myList = myList.OrderByDescending(x => x.boolVar).ToList();
+            foreach (var item in myList)
+            {
+                Console.WriteLine(item.str);
+            }
+        }
+
+        static void EnumOperation()
+        {
+            string str = "VirtualGroup_AddIndividualX";
+            var vgLIst = Enum.GetNames(typeof(VirtualGroupMode)).ToList();
+           var dic = Enum.GetValues(typeof(VirtualGroupMode))
+               .Cast<VirtualGroupMode>()
+               .ToDictionary(t => (int)t, t => t.ToString());
+
+            List<string> listStr = new List<string>();
+            listStr.Add("abc");
+            listStr.Add("def");
+            foreach (var st in listStr)
+            {
+                Console.WriteLine(st);
+                listStr.Remove(st);
+            }
+            Console.WriteLine(listStr.Count);
+
+            //if (VirtualGroupMode.VirtualGroup_AddIndividual.ToString() == str)
+            //{
+            //    Console.WriteLine(true);
+            //}
+            //Console.WriteLine((VirtualGroupMode.VirtualGroup_AddIndividual));
         }
 
         static void DatesCheck()
@@ -59,8 +148,61 @@ namespace MyCSharpApp
                 }
                 streamReader2.Close();
             }
-            performOperationsOnInput();
+           // performOperationsOnInput();
         }
+        static void FindUncommon()
+        {
+            //ListStrLineElements contains the sharepoint group members multiline.
+            //ListStrLineElements2 contains 2780 members all in one line.
+            List<string> GroupEmails = new List<string>();
+            List<string> Scon2780Emails = new List<string>();
+            foreach (var data in ListStrLineElements)
+            {
+                var splitarr = data.ToLower().Split(',');
+                foreach (var email in splitarr)
+                {
+                    var em = email.Trim();
+                    if (!string.IsNullOrEmpty(em) && !string.IsNullOrWhiteSpace(em) && !GroupEmails.Contains(em))
+                    {
+                        GroupEmails.Add(em);
+                    }
+                }
+            }
+            foreach (var data in ListStrLineElements2)
+            {
+                var splitarr = data.ToLower().Split(',');
+                foreach (var email in splitarr)
+                {
+                    var em = email.Trim();
+                    if (!string.IsNullOrEmpty(em) && !string.IsNullOrWhiteSpace(em) && !Scon2780Emails.Contains(em))
+                    {
+                        Scon2780Emails.Add(em);
+                    }
+                }
+            }
+            foreach (var scon in Scon2780Emails)
+            {
+                if (!GroupEmails.Contains(scon))
+                {
+                    sbTextToWriteInOutput.AppendLine(scon);
+                }
+            }
+            /*
+              output.Add(splitarr[1].Trim() + "\t" + splitarr[0].Trim());
+                sbTextToWriteInOutput.AppendLine(splitarr[1].Trim() + "\t" + splitarr[0].Trim());
+             */
+        }
+        static void FindFirstLastName()
+        {
+            List<string> output = new List<string>();
+            foreach (var data in ListStrLineElements)
+            {
+                var splitarr = data.Split(',');
+                output.Add(splitarr[1].Trim() + "\t" + splitarr[0].Trim());
+                sbTextToWriteInOutput.AppendLine(splitarr[1].Trim() + "\t" + splitarr[0].Trim());
+            }
+        }
+
         static void UpdateListElement()
         {
             var SelectedProgramsList = new List<string>();
@@ -93,8 +235,7 @@ namespace MyCSharpApp
             }
             WriteToOutputFile();
         }
-
-
+       
         static void WriteToOutputFile()
         {
             if (sbTextToWriteInOutput.Length > 0)
@@ -296,6 +437,7 @@ namespace MyCSharpApp
     {
         public string str { get; set; }
         public int intNum { get; set; }
+        public bool boolVar { get; set; }
     }
 
     public class ModelData2
@@ -379,12 +521,33 @@ namespace MyCSharpApp
 
 
         }
-
+        
 
     }
+    public enum VirtualGroupMode
+    {
+        VirtualGroup_AddIndividual,
+        VirtualGroup_AddAddress,
+        VirtualGroup_AddProgram,
+        VirtualGroup_ProgramBasedNavigation,
+        VirtualGroup_TToNonTMember,
+        VirtualGroup_CaptureABDInformation,
+        VirtualGroup_Safe,
+        VirtualGroup_MemberOutOfHousehold,
+        VirtualGroup_FullExpenseNavigation,
+        VirtualGroup_FullIncomeNavigation,
+        VirtualGroup_AddEditIncomeDeduction,
+        VirtualGroup_OutOfStateAddress,
+        VirtualGroup_RACFlow,
+        VirtualGroup_RenewalFlow,
+        DSNAPFlow,
+        VirtualGroup_MidCertification,
+        VirtualGroup_MemberDetermination,
+        VirtualGroup_VisibleInSC,
+        VirtualGroup_IncomeFlowNavigation
+    }
 
-
-
+    public class Employee { public string FirstName { get; set; } public int Age { get; set; } }
 }
 
 
