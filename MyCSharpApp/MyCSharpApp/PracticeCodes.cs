@@ -25,23 +25,38 @@ namespace MyCSharpApp
         }
          static void EmployeeListOperation()
         {
-            Console.WriteLine("The EXE is on this path: ");
-            Console.WriteLine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
             List<Employee> employees = new List<Employee>();
             employees.Add(new Employee() { FirstName = "John", Age = 29 });
+            employees.Add(new Employee() { FirstName = "Jane", Age = 39 });
             employees.Add(new Employee() { FirstName = "Matts", Age = 25 });
-            employees.Add(new Employee() { FirstName = "Eliza", Age = 30 });
             employees.Add(new Employee() { FirstName = "Plank", Age = 29 });
+            employees.Add(new Employee() { FirstName = "Eliza", Age = 42 });
+            employees.Add(new Employee() { FirstName = "Maria", Age = 18 });
+            employees.Add(new Employee() { FirstName = "James", Age = 26 });
 
-            var FirstName = employees.OrderByDescending(x => x.Age).FirstOrDefault().FirstName.ToUpper();
+
             //Find The First Name of the Highest Aged Employee in Capitalized format using LINQ(It should output ELIZA)
+            var firstName = employees.FirstOrDefault().FirstName;
+            //var firstName = employees.OrderByDescending(x => x.Age).FirstOrDefault().FirstName.ToUpper();
+            
 
-            
-            Console.WriteLine(FirstName);
-            
-            //Find All employees between the age 24 and (Both Inclusive)
+
+            Console.WriteLine(firstName);
+            Console.WriteLine();
+
+            //Find All employees between the age 20-30
+            var employeesFiltered = employees.ToList();
+            //var employeesFiltered = employees.Where(x=>x.Age > 20 && x.Age < 30).ToList();
+
+
+            Console.WriteLine("Filtered Employees: ");
+            foreach (var employee in employeesFiltered)
+            {
+                Console.WriteLine(employee.FirstName + " " + employee.Age);
+            }
+
         }
-
+       
         static void testRegex()
         {
             

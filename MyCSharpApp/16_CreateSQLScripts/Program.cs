@@ -28,17 +28,21 @@ class Program
 {
     //Configurable Paths and FileName Constants.
     public static string RepositoryProjectsPath = string.Empty;
-    public const string InputFileRelativePath = @"16_CreateSQLScripts\bin\Debug\\InputOutput_SQLScripts\InputFile.txt";
-    public const string OutputFileRelativePath = @"16_CreateSQLScripts\bin\Debug\\InputOutput_SQLScripts\OutputFile.sql";
+    public const string InputFileRelativePath = @"InputOutput_SQLScripts\InputFile.txt";
+    public const string OutputFileRelativePath = @"InputOutput_SQLScripts\OutputFile.sql";
+    
+
 
     //Application Level Variables
     static List<string> ListStrLineElements = new List<string>();
     static StringBuilder SBQueryToWrite = new StringBuilder();
     public static string TableName;
+    public static string InputFilePath;
+    public static string OutputFilePath;
 
     static void Main(string[] args)
     {
-        ReadResourceFile();
+        PopulateInputOutputFilePath();
         ReadFromInputFile();
         if (ListStrLineElements.Count > 0)
         {
@@ -49,27 +53,16 @@ class Program
         Console.ReadKey();
 
     }
-    static void ReadResourceFile()
+    static void PopulateInputOutputFilePath()
     {
-        //Make sure the resourFile have access modifier as public and System.Forms.Dll is imported for ResXResourceReader to work
-        var resourceFileRelativePath = @"MyCSharpApp\MyCSharpApp\MyCSharpApp\Resources\ResourcesFile.resx";
-        var executingAssemblyPath = Assembly.GetExecutingAssembly().Location;
-        var firstIndexOfMyCSharpApp = executingAssemblyPath.IndexOf("MyCSharpApp");
-        string resourceFilePath = executingAssemblyPath.Substring(0, firstIndexOfMyCSharpApp) + resourceFileRelativePath;
-        ResXResourceReader rsxr = new ResXResourceReader(resourceFilePath);
-        foreach (DictionaryEntry de in rsxr)
-        {
-            if (de.Key.ToString() == "RepositoryProjectsPath_"+ Environment.MachineName)
-            {
-                RepositoryProjectsPath = de.Value.ToString();
-            }
-        }
-        rsxr.Close();
+        var currentExeDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        InputFilePath = currentExeDirectory + @"\" + InputFileRelativePath;
+        OutputFilePath = currentExeDirectory + @"\" + OutputFileRelativePath;
     }
 
     static void ReadFromInputFile()
     {
-        var fileStream = new FileStream(RepositoryProjectsPath + InputFileRelativePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+        var fileStream = new FileStream(InputFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
         using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
         {
             string line;
@@ -188,7 +181,7 @@ class Program
         bool writeToFile = true;//Make it true for Writing to File/During Deployment and false while debugging
         if (writeToFile)
         {
-            File.WriteAllText(RepositoryProjectsPath + OutputFileRelativePath, SBQueryToWrite.ToString());
+            File.WriteAllText(OutputFilePath, SBQueryToWrite.ToString());
             Console.WriteLine("Output File Updated");
         }
     }

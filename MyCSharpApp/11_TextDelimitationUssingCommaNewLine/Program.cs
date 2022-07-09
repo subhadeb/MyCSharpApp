@@ -87,23 +87,25 @@ class Program
         Console.WriteLine("3. Comma Separated to New Line(Input Text file should have all the elements Separated by Comma)");
         Console.WriteLine("4. New Line to New Line With Comma Separated(Input Text file should have all the elements Line by Line)");
         Console.WriteLine("5. Same as #4(New Line to New Line With Comma Separated) + Tab before Comma in each line");
+        Console.WriteLine("6. Add Line breaks between the given lines");
+        Console.WriteLine("7. Find Duplicates(Input Text file should have all the elements Line by Line)");
         string userInput = Console.ReadLine();
         StringBuilder sbText = new StringBuilder();
         string processedString = string.Empty;
         switch (userInput)
         {
-            case "1":
+            case "1": //New Line to Comma Separated(Input Text file should have all the elements Line by Line
                 processedString = String.Join(",", ListStrLineElements);
                 break;
-            case "2":
+            case "2": //Tabbed to Comma Separated(Input Text file should have all the elements Separated by Tabs- Same as Excel Columns
                 var elementsArray2 = ListStrLineElements[0].Split('\t');
                 processedString = String.Join(",", elementsArray2);
                 break;
-            case "3":
+            case "3"://Comma Separated to New Line(Input Text file should have all the elements Separated by Comma
                 var elementsArray3 = ListStrLineElements[0].Split(',');
                 processedString = String.Join("\n", elementsArray3);
                 break;
-            case "4":
+            case "4"://New Line to New Line With Comma Separated(Input Text file should have all the elements Line by Line
                 for (int i = 0; i < ListStrLineElements.Count; i++)
                 {
                     if (i == 0)
@@ -116,7 +118,7 @@ class Program
                     }
                 }
                 break;
-            case "5":
+            case "5"://Same as #4(New Line to New Line With Comma Separated) + Tab before Comma in each line
                 for (int i = 0; i < ListStrLineElements.Count; i++)
                 {
                     if (i == 0)
@@ -128,6 +130,26 @@ class Program
                         processedString =  processedString + "\t"  + ',' +  ListStrLineElements[i] + '\n';
                     }
                 }
+                break;
+            case "6"://Add Line breaks between the given lines
+                Console.WriteLine("Enter Number of Line Breaks in Between. Eg. 1/2/5");
+                int userInputLineBreaks = Convert.ToInt32(Console.ReadLine());
+                string stringToReplace = "\n";
+                for (int i = 0; i < userInputLineBreaks; i++)
+                {
+                    stringToReplace = stringToReplace + "\n";
+                }
+                foreach (var line in ListStrLineElements)
+                {
+                    processedString = processedString + line + stringToReplace;
+                }
+                break;
+            case "7":
+                var toLowerList = ListStrLineElements.ConvertAll(x => x.ToLower());
+                var duplicateKeys = toLowerList.GroupBy(x => x)
+                        .Where(group => group.Count() > 1)
+                        .Select(group => group.Key).ToList();
+                processedString = String.Join("\n", duplicateKeys);
                 break;
         }
         sbText.Append(processedString);

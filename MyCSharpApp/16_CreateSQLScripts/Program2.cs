@@ -40,6 +40,7 @@ class Program2
 
     static void Main2(string[] args)
     {
+        //MOSTLY THIS Program2.cs can be deleted, because the already existing Program.cs's exe can be run in any Machine including vdi
         ReadFromInputFile();
         if (ListStrLineElements.Count > 0)
         {
