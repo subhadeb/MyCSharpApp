@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 /*
 
+    NOTE: For running the project initially, Keep/copy the folder InputOutput_SQLScripts near exe file under Debug.
     
     ReadFromInputFile(): Reads the Contents form Input file store in the location InputFileRelativePath and push all the lines to ListStrLineElements
     processAndCreateScript(): Creates the SQL Script for Create Script(Based on Console Input) and Insert Script in the StringBuilder SBQueryToWrite.
