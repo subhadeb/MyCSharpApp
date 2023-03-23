@@ -185,20 +185,23 @@ class Program
             Console.WriteLine();
             Console.WriteLine("Is First Column '" + columnNamesArray[0] + "' the Primary-Key/Where-Clause-Colum? Press 'Y' for Yes any other key for No");
             var isFirstColumnPrimaryKey = Console.ReadLine().ToLower() == "y";
-            
+
             if (ListStrLineElements != null && ListStrLineElements.Any())
             {
                 string firstColumnVal = null;
                 foreach (var lineItem in ListStrLineElements)
                 {
+                    var dataArray = lineItem.Split('\t');
+                    if (string.IsNullOrEmpty(dataArray[0]))//If the value is blank/"" we need to loop with invalid entry
+                    {
+                        continue;
+                    }
                     SBQueryToWrite.AppendLine("UPDATE " + TableName);
                     SBQueryToWrite.AppendLine("SET");
-                    var dataArray = lineItem.Split('\t');
-                    var dataListWithQute = new List<string>();
 
                     for (int i = 0; i < dataArray.Length; i++)
                     {
-                        
+
                         var data = dataArray[i];
                         var columnName = columnNamesArray[i];
 
@@ -222,9 +225,9 @@ class Program
                     }
                     if (isFirstColumnPrimaryKey && !string.IsNullOrEmpty(firstColumnVal))
                     {
-                        SBQueryToWrite.AppendLine("WHERE "+ columnNamesArray[0] + " = " + firstColumnVal + "");
+                        SBQueryToWrite.AppendLine("WHERE " + columnNamesArray[0] + " = " + firstColumnVal + "");
                     }
-                    else 
+                    else
                     {
                         SBQueryToWrite.AppendLine("WHERE 1 = 0");
                     }
@@ -232,8 +235,14 @@ class Program
                     SBQueryToWrite.AppendLine();
 
                 }
-               
+
             }
+        }
+        else
+        {
+            Console.WriteLine("Invalid Input");
+            Console.ReadKey();
+            Environment.Exit(0);
         }
 
     }
