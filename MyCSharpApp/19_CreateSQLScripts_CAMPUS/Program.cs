@@ -31,7 +31,7 @@ class Program
     public static string RepositoryProjectsPath = string.Empty;
     public const string InputFileRelativePath = @"InputOutput_SQLScripts\InputFile.txt";
     public const string OutputFileRelativePath = @"InputOutput_SQLScripts\OutputFile.sql";
-    
+
 
 
     //Application Level Variables
@@ -94,7 +94,7 @@ class Program
             SBQueryToWrite.AppendLine("CREATE TABLE " + TableName + "\n(");
             foreach (var column in columnNamesArray)
             {
-                Console.WriteLine("Enter Datatype for Column: ["+ column + "] as Per above Datatype Input");
+                Console.WriteLine("Enter Datatype for Column: [" + column + "] as Per above Datatype Input");
                 //var isValid = false;
                 input = 0;
                 while (input <= 0 || input > 4)
@@ -133,7 +133,7 @@ class Program
             SBQueryToWrite.AppendLine();
         }
 
-        if (inputLowerCase == "c" || inputLowerCase == "i") 
+        if (inputLowerCase == "c" || inputLowerCase == "i")
         {
             var insertStatementLine1 = "INSERT INTO " + TableName + "\n(";
             var insertStatementLine2 = string.Join(",", columnNamesArray) + "\n) VALUES";

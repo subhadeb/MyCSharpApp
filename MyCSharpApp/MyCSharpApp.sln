@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30621.155
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33502.453
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyCSharpApp", "MyCSharpApp\MyCSharpApp.csproj", "{6224C324-7527-4233-8A8C-37A7CAFA9C3C}"
 EndProject
@@ -38,6 +38,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "17_CreateDailyStatusInput", "17_CreateDailyStatusInput\17_CreateDailyStatusInput.csproj", "{35D9E3A6-113A-4671-AD76-AA93D19E37BF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "18_ConnectToMongoDB", "18_ConnectToMongoDB\18_ConnectToMongoDB.csproj", "{ADD059EF-CF5F-4F98-B74D-0D7A66D89CE0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "19_CreateSQLScripts_CAMPUS", "19_CreateSQLScripts_CAMPUS\19_CreateSQLScripts_CAMPUS.csproj", "{675211AD-80D7-436E-8289-E72E65F470D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -117,6 +119,10 @@ Global
 		{ADD059EF-CF5F-4F98-B74D-0D7A66D89CE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ADD059EF-CF5F-4F98-B74D-0D7A66D89CE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ADD059EF-CF5F-4F98-B74D-0D7A66D89CE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{675211AD-80D7-436E-8289-E72E65F470D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{675211AD-80D7-436E-8289-E72E65F470D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{675211AD-80D7-436E-8289-E72E65F470D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{675211AD-80D7-436E-8289-E72E65F470D2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
