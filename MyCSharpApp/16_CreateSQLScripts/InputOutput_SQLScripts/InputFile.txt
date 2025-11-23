@@ -1,5 +1,7 @@
-﻿Table Name: PanelMemberOtherAllInserted_2025_01_11
+﻿Table Name: TestTable
 ---------------------------------------------------------------
 DO NOT DELETE TILL THIS LINE
 ---------------------------------------------------------------
-test test
+Col1	Col2
+Row1Col1	Row1Col2
+Row2Col1	Row2Col2
